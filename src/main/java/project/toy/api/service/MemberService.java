@@ -1,14 +1,12 @@
-package project.toy.web.service;
+package project.toy.api.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import project.toy.web.domain.Member;
-import project.toy.web.repository.MemberRepository;
+import project.toy.api.domain.Member;
+import project.toy.api.repository.MemberRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service

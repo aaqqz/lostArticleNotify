@@ -1,4 +1,4 @@
-package project.toy.web.domain;
+package project.toy.api.domain;
 
 import lombok.Builder;
 import lombok.Getter;
