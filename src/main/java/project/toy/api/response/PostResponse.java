@@ -14,18 +14,14 @@ public class PostResponse {
     private String title;
     private String content;
     private String createdBy;
-    private LocalDateTime createdAt;
-    private String lastModifiedBy;
-    private LocalDateTime lastModifiedAt;
+    private String createdAt;
 
     @Builder
-    public PostResponse(Long id, String title, String content, String createdBy, LocalDateTime createdAt, String lastModifiedBy, LocalDateTime lastModifiedAt) {
+    public PostResponse(Long id, String title, String content, String createdBy, String createdAt) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
-        this.lastModifiedBy = lastModifiedBy;
-        this.lastModifiedAt = lastModifiedAt;
     }
 }

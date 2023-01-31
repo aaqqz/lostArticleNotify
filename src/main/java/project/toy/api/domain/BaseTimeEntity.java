@@ -5,10 +5,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @MappedSuperclass // MappedSuperclass 상속시 클래스의 필드값들도 컬럼으로 인식
@@ -17,8 +17,19 @@ public class BaseTimeEntity {
 
     @Column(updatable = false)
     @CreatedDate
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @LastModifiedDate
-    private LocalDateTime lastModifiedAt;
+    private String lastModifiedAt;
+
+    @PrePersist // 엔티티 insert 이전 실행
+    public void onPrePersist(){
+        this.createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+        this.lastModifiedAt = this.createdAt;
+    }
+
+    @PreUpdate // 엔티티 update 이전 실행
+    public void onPreUpdate(){
+        this.lastModifiedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+    }
 }
