@@ -1,7 +1,6 @@
 package project.toy.api.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +11,6 @@ import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
 import project.toy.api.response.PostResponse;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
