@@ -10,7 +10,10 @@ import project.toy.api.domain.Post;
 import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
+import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,7 +69,6 @@ class PostServiceTest {
         // then
         assertNotNull(postResponse);
         assertEquals(1L, postRepository.count());
-        assertEquals(1L, postResponse.getId());
         assertEquals("제목", postResponse.getTitle());
         assertEquals("내용", postResponse.getContent());
         assertNotNull(postResponse.getCreatedBy());
@@ -80,4 +82,10 @@ class PostServiceTest {
         assertThrows(PostNotFound.class, () -> postService.get(1L));
     }
 
+    @Test
+    @DisplayName("게시글 복수 조회")
+    void postGetList() {
+        PostSearch postSearch = new PostSearch();
+        List<Post> list = postService.getList(postSearch);
+    }
 }

@@ -13,8 +13,11 @@ import project.toy.api.domain.Post;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -144,18 +147,49 @@ class PostControllerTest {
 
         // then
         assertEquals(1L, postRepository.count());
-        Post post  = postRepository.findById(1L).get();
+        Post post = postRepository.findAll().get(0);
         assertEquals("제목", post.getTitle());
         assertEquals("내용", post.getContent());
     }
 
     @Test
     @DisplayName("게시글 단건 조회")
-    void postGet() {
+    void postGet() throws Exception{
         // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
 
-        // when
 
-        // then
+        // expected
+        mockMvc.perform(get("/post/{postId}", post.getId())
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.title").value("제목"))
+                .andExpect(jsonPath("$.content").value("내용"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("게시글 단건 조회(게시글 없음)")
+    void postGetNone() throws Exception{
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+
+        // expected
+        mockMvc.perform(get("/post/{postId}", post.getId() + 1L)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("404"))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 글입니다."))
+                .andDo(print());
     }
 }

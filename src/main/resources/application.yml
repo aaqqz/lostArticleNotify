@@ -11,5 +11,8 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-#  jpa:
-#    database: h2
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true

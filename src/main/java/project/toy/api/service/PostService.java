@@ -6,8 +6,10 @@ import project.toy.api.domain.Post;
 import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
+import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,5 +37,10 @@ public class PostService {
                 .createdAt(post.getCreatedAt())
                 .createdBy(post.getCreatedBy())
                 .build();
+    }
+
+    public List<Post> getList(PostSearch postSearch) {
+        postRepository.getList(postSearch);
+        return null;
     }
 }
