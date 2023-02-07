@@ -1,6 +1,5 @@
 package project.toy.api.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,7 @@ import project.toy.api.domain.Member;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberCreate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class MemberServiceTest {
@@ -36,9 +35,9 @@ class MemberServiceTest {
         memberService.join(memberCreate);
 
         // then
-        assertEquals(1L, memberRepository.count());
+        assertThat(memberRepository.count()).isEqualTo(1L);
         Member member = memberRepository.findAll().get(0);
-        assertEquals("member", member.getName());
+        assertThat(member.getName()).isEqualTo("member");
     }
 
     @Test
@@ -53,10 +52,10 @@ class MemberServiceTest {
         Member findMember = memberService.findOne(member.getId());
 
         //then
-        assertNotNull(findMember);
-        assertEquals(1L, memberRepository.count());
-        assertEquals(1L, findMember.getId());
-        assertEquals("member", findMember.getName());
+        assertThat(findMember).isNotNull();
+        assertThat(memberRepository.count()).isEqualTo(1L);
+        assertThat(findMember.getId()).isEqualTo(1L);
+        assertThat(findMember.getName()).isEqualTo("member");
     }
 
     @Test

@@ -15,7 +15,7 @@ import project.toy.api.response.PostResponse;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -45,12 +45,12 @@ class PostServiceTest {
         postService.write(postCreate);
 
         // then
-        assertEquals(1L, postRepository.count());
+        assertThat(postRepository.count()).isEqualTo(1L);
         Post post = postRepository.findAll().get(0);
-        assertEquals("제목", post.getTitle());
-        assertEquals("내용", post.getContent());
-        assertNotNull(post.getCreatedBy());
-        assertNotNull(post.getCreatedAt());
+        assertThat(post.getTitle()).isEqualTo("제목");
+        assertThat(post.getContent()).isEqualTo("내용");
+        assertThat(post.getCreatedAt()).isNotNull();
+        assertThat(post.getCreatedBy()).isNotNull();
     }
 
     @Test
@@ -67,19 +67,21 @@ class PostServiceTest {
         PostResponse postResponse = postService.get(post.getId());
 
         // then
-        assertNotNull(postResponse);
-        assertEquals(1L, postRepository.count());
-        assertEquals("제목", postResponse.getTitle());
-        assertEquals("내용", postResponse.getContent());
-        assertNotNull(postResponse.getCreatedBy());
-        assertNotNull(postResponse.getCreatedAt());
+        assertThat(postResponse).isNotNull();
+        assertThat(postRepository.count()).isEqualTo(1L);
+        assertThat(post.getTitle()).isEqualTo("제목");
+        assertThat(post.getContent()).isEqualTo("내용");
+        assertThat(post.getCreatedAt()).isNotNull();
+        assertThat(post.getCreatedBy()).isNotNull();
     }
     
     @Test
     @DisplayName("게시글 단건 조회(게시글 없음)")
     void postGetNone() {
         //expected
-        assertThrows(PostNotFound.class, () -> postService.get(1L));
+        assertThatThrownBy(() -> postService.get(1L))
+                .isInstanceOf(PostNotFound.class)
+                .hasMessageContaining("존재하지 않는 글입니다.");
     }
 
     @Test

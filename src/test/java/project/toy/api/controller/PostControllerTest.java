@@ -13,9 +13,7 @@ import project.toy.api.domain.Post;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -146,10 +144,11 @@ class PostControllerTest {
                 .andDo(print());
 
         // then
-        assertEquals(1L, postRepository.count());
+        assertThat(postRepository.count()).isEqualTo(1L);
         Post post = postRepository.findAll().get(0);
-        assertEquals("제목", post.getTitle());
-        assertEquals("내용", post.getContent());
+        assertThat(post.getTitle()).isEqualTo("제목");
+        assertThat(post.getContent()).isEqualTo("내용");
+
     }
 
     @Test
