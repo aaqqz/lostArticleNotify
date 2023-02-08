@@ -8,17 +8,17 @@ import lombok.Data;
 @Builder
 public class PostSearch {
 
-    @Builder.Default
-    private Integer page = 1;
-
-    @Builder.Default
-    private Integer size = 10;
-
     private String title;
 
     private String content;
 
-    public long getOffset() {
-        return (long) (Math.max(1, page) - 1) * size;
-    }
+//    @Builder.Default
+//    private Integer page = 1;
+//
+//    @Builder.Default
+//    private Integer size = 10;
+
+//    public long getOffset() {
+//        return (long) (Math.max(1, page) - 1) * size;
+//    }
 }

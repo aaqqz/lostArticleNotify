@@ -2,6 +2,7 @@ package project.toy.api.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.toy.api.domain.Post;
 import project.toy.api.exception.PostNotFound;
@@ -42,8 +43,8 @@ public class PostService {
                 .build();
     }
 
-    public Page<PostResponse> search(PostSearch postSearch) {
-        return postRepository.search(postSearch);
+    public Page<PostResponse> search(PostSearch postSearch, Pageable pageable) {
+        return postRepository.search(postSearch, pageable);
     }
 
     @Transactional

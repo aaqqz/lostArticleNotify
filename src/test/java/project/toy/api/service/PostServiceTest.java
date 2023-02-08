@@ -11,13 +11,10 @@ import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;
-import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @SpringBootTest
@@ -89,6 +86,7 @@ class PostServiceTest {
     @Test
     @DisplayName("게시글 리스트 조회")
     void postSearch() {
+        // todo 페이징 조회
         /*PostSearch postSearch = new PostSearch();
         List<Post> list = postService.getList(postSearch);*/
     }
@@ -190,7 +188,6 @@ class PostServiceTest {
                 .build();
 
         // expected
-
         assertThatThrownBy(() -> postService.edit(post.getId() +1L, postEdit))
                 .isInstanceOf(PostNotFound.class)
                 .hasMessageContaining("존재하지 않는 글입니다.");
@@ -198,7 +195,7 @@ class PostServiceTest {
 
     @Test
     @DisplayName("게시글 삭제")
-    void delete() {
+    void postDelete() {
         // given
         Post post = Post.builder()
                 .title("제목")

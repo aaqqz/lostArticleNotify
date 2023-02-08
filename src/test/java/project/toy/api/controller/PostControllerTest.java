@@ -1,6 +1,5 @@
 package project.toy.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +13,12 @@ import project.toy.api.domain.Post;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;
-import project.toy.api.response.PostResponse;
 
-import static org.assertj.core.api.Assertions.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -50,7 +52,6 @@ class PostControllerTest {
                 .title("제목")
                 .content("내용")
                 .build();
-
         String json = objectMapper.writeValueAsString(postCreate);
 
         // expected
@@ -62,14 +63,13 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 등록_제목 필수값")
-    void postWriteNoneTitle() throws Exception {
+    @DisplayName("게시글 등록_제목 null")
+    void postWriteNoTitle() throws Exception {
         // given
         PostCreate postCreate = PostCreate.builder()
                 .title("")
                 .content("내용")
                 .build();
-
         String json = objectMapper.writeValueAsString(postCreate);
 
         // expected
@@ -84,14 +84,13 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 등록_내용 필수값")
-    void postWriteNoneContent() throws Exception {
+    @DisplayName("게시글 등록_내용 null")
+    void postWriteNoContent() throws Exception {
         // given
         PostCreate postCreate = PostCreate.builder()
                 .title("제목")
                 .content("")
                 .build();
-
         String json = objectMapper.writeValueAsString(postCreate);
 
         // expected
@@ -113,7 +112,6 @@ class PostControllerTest {
                 .title("금지어")
                 .content("내용")
                 .build();
-
         String json = objectMapper.writeValueAsString(postCreate);
 
         // expected
@@ -128,14 +126,13 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 작성_DB insert")
-    void postInsertDB() throws Exception {
+    @DisplayName("게시글 등록_DB insert")
+    void postWriteDBInsert() throws Exception {
         // given
         PostCreate postCreate = PostCreate.builder()
                 .title("제목")
                 .content("내용")
                 .build();
-
         String json = objectMapper.writeValueAsString(postCreate);
 
         // when
@@ -163,7 +160,6 @@ class PostControllerTest {
                 .build();
         postRepository.save(post);
 
-
         // expected
         mockMvc.perform(get("/post/{postId}", post.getId())
                         .contentType(APPLICATION_JSON))
@@ -184,7 +180,6 @@ class PostControllerTest {
                 .build();
         postRepository.save(post);
 
-
         // expected
         mockMvc.perform(get("/post/{postId}", post.getId() + 1L)
                         .contentType(APPLICATION_JSON))
@@ -195,6 +190,25 @@ class PostControllerTest {
     }
 
     // todo 페이징 조회
+    @Test
+    @DisplayName("게시글 페이징 조회")
+    void postSearch() throws Exception {
+        // given
+        List<Post> posts = IntStream.range(0, 30)
+                .mapToObj(i -> Post.builder()
+                        .title("제목-" + i)
+                        .content("내용-" + i)
+                        .build()
+                ).collect(Collectors.toList());
+        postRepository.saveAll(posts);
+
+        // expected
+        mockMvc.perform(get("/post?page=1&size=10")
+                        //.contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 
     @Test
     @DisplayName("게시글 수정")
@@ -223,7 +237,89 @@ class PostControllerTest {
     @Test
     @DisplayName("게시글 수정_제목 null")
     void postEditNoTitle() throws Exception {
-        // todo testcase 작성
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .content("내용 수정")
+                .build();
+        String json = objectMapper.writeValueAsString(postEdit);
+
+        // expected
+        mockMvc.perform(patch("/post/{postId}", post.getId())
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+                .andDo(print());
     }
 
+    @Test
+    @DisplayName("게시글 수정_존재하지 않는 게시글")
+    void postEditNoPost() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("제목 수정")
+                .content("내용 수정")
+                .build();
+        String json = objectMapper.writeValueAsString(postEdit);
+
+        // expected
+        mockMvc.perform(patch("/post/{postId}", post.getId() + 1L)
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("404"))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 글입니다."))
+                .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("게시글 삭제")
+    void postDelete() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        // expected
+        mockMvc.perform(delete("/post/{postId}", post.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+
+    @Test
+    @DisplayName("게시글 삭제_존재하지 않는 게시글")
+    void postDeleteNoPost() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        // expected
+        mockMvc.perform(delete("/post/{postId}", post.getId() + 1L)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("404"))
+                .andExpect(jsonPath("$.message").value("존재하지 않는 글입니다."))
+                .andDo(print());
+    }
 }

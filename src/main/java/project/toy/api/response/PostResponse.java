@@ -2,8 +2,10 @@ package project.toy.api.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class PostResponse {
 
     private Long id;

@@ -1,9 +1,12 @@
 package project.toy.api.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;
+import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
 import project.toy.api.service.PostService;
 
@@ -26,10 +29,15 @@ public class PostController {
         return postService.get(postId);
     }
 
-    // 페이징 조회
+    @GetMapping("/post")
+    public Page<PostResponse> getList(PostSearch postSearch, Pageable pageable) {
+        return postService.search(postSearch, pageable);
+    }
+
 
     @PatchMapping("/post/{postId}")
     public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
+
         postService.edit(postId, postEdit);
     }
 
