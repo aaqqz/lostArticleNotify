@@ -175,6 +175,28 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("게시글 수정_존재하지 않는 게시글")
+    void postEditNoPost() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정 제목")
+                .content("수정 내용")
+                .build();
+
+        // expected
+
+        assertThatThrownBy(() -> postService.edit(post.getId() +1L, postEdit))
+                .isInstanceOf(PostNotFound.class)
+                .hasMessageContaining("존재하지 않는 글입니다.");
+    }
+
+    @Test
     @DisplayName("게시글 삭제")
     void delete() {
         // given
