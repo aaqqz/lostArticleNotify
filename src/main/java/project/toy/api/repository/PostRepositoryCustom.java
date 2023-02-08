@@ -1,11 +1,13 @@
 package project.toy.api.repository;
 
+import org.springframework.data.domain.Page;
 import project.toy.api.domain.Post;
 import project.toy.api.request.PostSearch;
+import project.toy.api.response.PostResponse;
 
 import java.util.List;
 
 public interface PostRepositoryCustom {
 
-    List<Post> getList(PostSearch postSearch);
+    Page<PostResponse> search(PostSearch postSearch);
 }

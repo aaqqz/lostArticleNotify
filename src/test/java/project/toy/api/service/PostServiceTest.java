@@ -10,10 +10,12 @@ import project.toy.api.domain.Post;
 import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
+import project.toy.api.request.PostEdit;
 import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -74,9 +76,9 @@ class PostServiceTest {
         assertThat(post.getCreatedAt()).isNotNull();
         assertThat(post.getCreatedBy()).isNotNull();
     }
-    
+
     @Test
-    @DisplayName("게시글 단건 조회(게시글 없음)")
+    @DisplayName("게시글 단건 조회_게시글 없음")
     void postGetNone() {
         //expected
         assertThatThrownBy(() -> postService.get(1L))
@@ -85,9 +87,123 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 복수 조회")
-    void postGetList() {
-        PostSearch postSearch = new PostSearch();
-        List<Post> list = postService.getList(postSearch);
+    @DisplayName("게시글 리스트 조회")
+    void postSearch() {
+        /*PostSearch postSearch = new PostSearch();
+        List<Post> list = postService.getList(postSearch);*/
+    }
+
+    @Test
+    @DisplayName("게시글 수정")
+    void postEdit() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정 제목")
+                .content("수정 내용")
+                .build();
+
+        // when
+        Thread.sleep(1000);
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다."));
+        assertThat(changedPost.getTitle()).isEqualTo("수정 제목");
+        assertThat(changedPost.getContent()).isEqualTo("수정 내용");
+        assertThat(post.getCreatedAt()).isLessThan(changedPost.getLastModifiedAt());
+    }
+
+    @Test
+    @DisplayName("게시글 수정_제목 null")
+    void postEditNoTitle() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title(null)
+                .content("수정 내용")
+                .build();
+
+        // when
+        Thread.sleep(1000);
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다."));
+        assertThat(changedPost.getTitle()).isEqualTo("제목");
+        assertThat(changedPost.getContent()).isEqualTo("수정 내용");
+        assertThat(post.getCreatedAt()).isLessThan(changedPost.getLastModifiedAt());
+    }
+
+    @Test
+    @DisplayName("게시글 수정_내용 null")
+    void postEditNoContent() throws Exception {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정 제목")
+                .content(null)
+                .build();
+
+        // when
+        Thread.sleep(1000);
+        postService.edit(post.getId(), postEdit);
+
+        // then
+        Post changedPost = postRepository.findById(post.getId())
+                .orElseThrow(() -> new IllegalArgumentException("글이 존재하지 않습니다."));
+        assertThat(changedPost.getTitle()).isEqualTo("수정 제목");
+        assertThat(changedPost.getContent()).isEqualTo("내용");
+        assertThat(post.getCreatedAt()).isLessThan(changedPost.getLastModifiedAt());
+    }
+
+    @Test
+    @DisplayName("게시글 삭제")
+    void delete() {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        // when
+        postService.delete(post.getId());
+
+        // then
+        assertThat(postRepository.count()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("게시글 삭제_존재하지 않는 게시글")
+    void deleteNoPost() {
+        // given
+        Post post = Post.builder()
+                .title("제목")
+                .content("내용")
+                .build();
+        postRepository.save(post);
+
+        // expected
+        assertThatThrownBy(() -> postService.delete(post.getId() + 1L))
+                .isInstanceOf(PostNotFound.class)
+                .hasMessageContaining("존재하지 않는 글입니다.");
     }
 }

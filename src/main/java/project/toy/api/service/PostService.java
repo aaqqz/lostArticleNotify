@@ -1,14 +1,17 @@
 package project.toy.api.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import project.toy.api.domain.Post;
 import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
+import project.toy.api.request.PostEdit;
 import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +42,22 @@ public class PostService {
                 .build();
     }
 
-    public List<Post> getList(PostSearch postSearch) {
-        postRepository.getList(postSearch);
-        return null;
+    public Page<PostResponse> search(PostSearch postSearch) {
+        return postRepository.search(postSearch);
+    }
+
+    @Transactional
+    public void edit(Long id, PostEdit postEdit) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFound());
+
+        post.edit(postEdit.getTitle(), postEdit.getContent());
+    }
+
+    public void delete(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFound());
+
+        postRepository.delete(post);
     }
 }

@@ -2,10 +2,6 @@ package project.toy.api.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import project.toy.api.domain.Post;
-import project.toy.api.repository.PostRepository;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class PostResponse {
@@ -24,4 +20,6 @@ public class PostResponse {
         this.createdBy = createdBy;
         this.createdAt = createdAt;
     }
+
+
 }
