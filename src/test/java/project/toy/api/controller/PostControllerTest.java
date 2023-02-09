@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -189,12 +190,11 @@ class PostControllerTest {
                 .andDo(print());
     }
 
-    // todo 페이징 조회
     @Test
     @DisplayName("게시글 페이징 조회")
     void postSearch() throws Exception {
         // given
-        List<Post> posts = IntStream.range(0, 30)
+        List<Post> posts = IntStream.range(1, 31)
                 .mapToObj(i -> Post.builder()
                         .title("제목-" + i)
                         .content("내용-" + i)
@@ -203,11 +203,15 @@ class PostControllerTest {
         postRepository.saveAll(posts);
 
         // expected
-        mockMvc.perform(get("/post?page=1&size=10")
+        mockMvc.perform(get("/post?page=0&size=10&title=3&content=내용")
                         //.contentType(APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()", is(4)))
+                .andExpect(jsonPath(("$.content[0].title")).value("제목-30"))
+                .andExpect(jsonPath(("$.content[1].title")).value("제목-23"))
                 .andDo(print());
+//        import static org.hamcrest.Matchers.is;
     }
 
     @Test

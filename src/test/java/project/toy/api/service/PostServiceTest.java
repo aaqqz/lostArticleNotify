@@ -6,12 +6,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import project.toy.api.domain.Post;
 import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;
+import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -84,11 +92,41 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 리스트 조회")
+    @DisplayName("게시글 페이징 조회")
     void postSearch() {
-        // todo 페이징 조회
-        /*PostSearch postSearch = new PostSearch();
-        List<Post> list = postService.getList(postSearch);*/
+        // given
+        List<Post> posts = IntStream.range(0, 30)
+                .mapToObj(i -> Post.builder()
+                        .title("제목-" + i)
+                        .content("내용-" + i)
+                        .build()
+                ).collect(Collectors.toList());
+        postRepository.saveAll(posts);
+
+        Pageable pageable = PageRequest.of(0, 3);
+
+        PostSearch postSearch = PostSearch.builder()
+                .title("")
+                .content("")
+                .build();
+        // when
+        Page<PostResponse> result = postService.search(postSearch, pageable);
+
+        // then
+//        List<PostResponse> result = PagePostResponse.stream()
+//                .map(post ->
+//                        PostResponse.builder()
+//                                .id(post.getId())
+//                                .title(post.getTitle())
+//                                .content(post.getContent())
+//                                .createdBy(post.getCreatedBy())
+//                                .createdAt(post.getCreatedAt())
+//                                .build())
+//                .collect(Collectors.toList());
+        System.out.println("result.getContent() = " + result.getContent());
+        assertThat(result.getSize()).isEqualTo(3);
+        assertThat(result.getContent()).extracting("title").containsExactly("제목-29", "제목-28", "제목-27");
+
     }
 
     @Test
@@ -188,7 +226,7 @@ class PostServiceTest {
                 .build();
 
         // expected
-        assertThatThrownBy(() -> postService.edit(post.getId() +1L, postEdit))
+        assertThatThrownBy(() -> postService.edit(post.getId() + 1L, postEdit))
                 .isInstanceOf(PostNotFound.class)
                 .hasMessageContaining("존재하지 않는 글입니다.");
     }

@@ -34,7 +34,6 @@ public class PostController {
         return postService.search(postSearch, pageable);
     }
 
-
     @PatchMapping("/post/{postId}")
     public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
 
