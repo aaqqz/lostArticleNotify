@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
 @Getter
 @MappedSuperclass // MappedSuperclass 상속시 클래스의 필드값들도 컬럼으로 인식
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity extends BaseTimeEntity {
+public class BaseEntity extends BaseTimeEntity {
 
     @Column(updatable = false)
     @CreatedBy

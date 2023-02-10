@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Comment extends BaseEntity{
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")
     private Long id;
 
