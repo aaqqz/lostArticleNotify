@@ -3,6 +3,7 @@ package project.toy.api.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 
@@ -17,6 +18,8 @@ public class Comment extends BaseEntity{
 
     private String comment;
 
+    private int depth;
+
     @ManyToOne
     @JoinColumn(name="memberId")
     private Member member;
@@ -26,8 +29,8 @@ public class Comment extends BaseEntity{
     private Post post;
 
     @Builder
-    public Comment(Long id, String comment, Member member, Post post){
-        this.id = id;
+    public Comment(int depth, String comment, Member member, Post post){
+        this.depth = depth;
         this.comment = comment;
         this.member = member;
         this.post = post;

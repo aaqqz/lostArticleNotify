@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @MappedSuperclass // MappedSuperclass 상속시 클래스의 필드값들도 컬럼으로 인식
 @EntityListeners(AuditingEntityListener.class)
-public class BaseTimeEntity {
+public abstract class BaseTimeEntity {
 
     @Column(updatable = false)
     @CreatedDate

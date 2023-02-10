@@ -12,7 +12,7 @@ import java.util.Date;
 @Getter
 public class LostItem {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "LOSTITEM_ID")
     private Long id;
 

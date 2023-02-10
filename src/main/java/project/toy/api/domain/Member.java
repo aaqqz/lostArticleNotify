@@ -32,8 +32,7 @@ public class Member{
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String name, String email, List<Post> posts, List<PostUserLostItem> postUserLostItems, List<Comment> comments) {
-        this.id = id;
+    public Member(String name, String email, List<Post> posts, List<PostUserLostItem> postUserLostItems, List<Comment> comments) {
         this.name = name;
         this.email = email;
         this.posts = posts;

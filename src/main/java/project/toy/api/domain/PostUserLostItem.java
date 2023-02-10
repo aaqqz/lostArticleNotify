@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class PostUserLostItem extends BaseEntity{
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "LOSTITEM_ID")
     private Long id;
 
@@ -23,8 +23,7 @@ public class PostUserLostItem extends BaseEntity{
 
 
     @Builder
-    public PostUserLostItem(Long id, String item, Member member){
-        this.id = id;
+    public PostUserLostItem(String item, Member member){
         this.item = item;
         this.member = member;
         if(!member.getPostUserLostItems().contains(this)){
