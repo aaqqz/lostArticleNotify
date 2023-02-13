@@ -7,10 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.toy.api.config.JwtConfig;
-import project.toy.api.config.data.UserSession;
+import project.toy.api.config.data.MemberSession;
 import project.toy.api.domain.Member;
 import project.toy.api.request.Login;
 import project.toy.api.response.SessionResponse;
@@ -48,7 +47,7 @@ public class AuthController {
 
     // jwt test
     @PostMapping("/jwtUse")
-    public UserSession jwtUse(UserSession userSession) {
+    public MemberSession jwtUse(MemberSession userSession) {
         log.info("jwtUse >>>>>>>>>>>>>>>>>");
         log.info("userSession={}", userSession.toString());
         return userSession;
