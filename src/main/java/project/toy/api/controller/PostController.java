@@ -1,10 +1,12 @@
 package project.toy.api.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.toy.api.config.data.UserSession;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;
 import project.toy.api.request.PostSearch;
@@ -13,6 +15,7 @@ import project.toy.api.service.PostService;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class PostController {
@@ -37,7 +40,6 @@ public class PostController {
 
     @PatchMapping("/post/{postId}")
     public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit) {
-
         postService.edit(postId, postEdit);
     }
 

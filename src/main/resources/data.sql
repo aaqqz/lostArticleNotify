@@ -1,0 +1,1 @@
+insert into `member` (name, email, password) values ('hk', 'sswwx1@naver.com', '1234')
