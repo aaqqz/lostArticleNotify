@@ -3,6 +3,7 @@ package project.toy.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;

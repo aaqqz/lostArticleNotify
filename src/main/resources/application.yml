@@ -6,13 +6,18 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
   datasource:
     url: jdbc:h2:mem:toy
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
   jpa:
     properties:
       hibernate:
         show_sql: true
         format_sql: true
+
+jwt:
+  key: gtK6Ga9gs0WNhvIqFSMqwJtpAUpChrfzDc//iqHMKgQ=

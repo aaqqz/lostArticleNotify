@@ -19,6 +19,8 @@ public class MemberController {
     public void join(@RequestBody @Valid MemberCreate memberCreate) {
         memberCreate.validate();
         memberService.join(memberCreate);
+
+
     }
 
 }
