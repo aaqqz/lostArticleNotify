@@ -20,5 +20,6 @@ spring:
         format_sql: true
     defer-datasource-initialization: true
 
-jwt:
-  jwtKey: gtK6Ga9gs0WNhvIqFSMqwJtpAUpChrfzDc//iqHMKgQ=
+  config:
+    import:
+      - classpath:/application-private.yml
