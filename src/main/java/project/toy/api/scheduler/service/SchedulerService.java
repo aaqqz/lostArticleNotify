@@ -1,9 +1,15 @@
 package project.toy.api.scheduler.service;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
+import project.toy.api.domain.LostItem;
+import project.toy.api.repository.LostItemRepository;
+import project.toy.api.scheduler.vo.LostItemVo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,19 +19,28 @@ import java.net.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SchedulerService {
+
+    private final LostItemRepository lostItemRepository;
 
     @Value("${publicData.lostItem.baseUrl}")
     private String baseUrl;
 
-    public void lostItemUpdate(){
-        String response = lostItemApiCall(1, 1);
-        log.info("response >>>>>>>>>>>>>>>>>>>>> {}", response);
+    public void lostItemUpdate() {
+        LostItemVo lostItemVo = lostItemApiCall(1, 1);
+        log.info("lostItemUpdate={}", lostItemVo);
+        // todo start, end index logic
 
+        saveLostItem(lostItemVo);
     }
 
-    private String lostItemApiCall(int startIndex, int endIndex) {
-        String response = "";
+    private void saveLostItem(LostItemVo lostItemVo) {
+        // todo lostItem save
+    }
+
+    private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
+        LostItemVo lostItemVo;
         baseUrl = baseUrl + startIndex + "/" + endIndex;
 
         try {
@@ -34,14 +49,7 @@ public class SchedulerService {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
-            BufferedReader br;
-
-            // 서비스코드가 정상이면 200~300사이의 숫자가 나옵니다.
-            if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            } else {
-                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
             String inputLine;
             StringBuilder sb = new StringBuilder();
@@ -50,57 +58,18 @@ public class SchedulerService {
             }
             br.close();
             conn.disconnect();
-            response = sb.toString();
+
+            JsonObject jsonObject = new Gson().fromJson(sb.toString(), JsonObject.class);
+            if ( jsonObject.has("lostArticleInfo")) {
+                lostItemVo = new Gson().fromJson(jsonObject.get("lostArticleInfo"), LostItemVo.class);
+            } else{
+                lostItemVo = new Gson().fromJson(jsonObject, LostItemVo.class);
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return response;
-    }
-
-    public void test() {
-        try {
-//            StringBuilder urlBuilder = new StringBuilder("http://openapi.seoul.go.kr:8088"); /*URL*/
-//            urlBuilder.append("/" +  URLEncoder.encode("sample","UTF-8") ); /*인증키 (sample사용시에는 호출시 제한됩니다.)*/
-//            urlBuilder.append("/" +  URLEncoder.encode("xml","UTF-8") ); /*요청파일타입 (xml,xmlf,xls,json) */
-//            urlBuilder.append("/" + URLEncoder.encode("CardSubwayStatsNew","UTF-8")); /*서비스명 (대소문자 구분 필수입니다.)*/
-//            urlBuilder.append("/" + URLEncoder.encode("1","UTF-8")); /*요청시작위치 (sample인증키 사용시 5이내 숫자)*/
-//            urlBuilder.append("/" + URLEncoder.encode("5","UTF-8")); /*요청종료위치(sample인증키 사용시 5이상 숫자 선택 안 됨)*/
-            // 상위 5개는 필수적으로 순서바꾸지 않고 호출해야 합니다.
-
-            // 서비스별 추가 요청 인자이며 자세한 내용은 각 서비스별 '요청인자'부분에 자세히 나와 있습니다.
-            // urlBuilder.append("/" + URLEncoder.encode("20220301","UTF-8")); /* 서비스별 추가 요청인자들*/
-
-            URL url = new URL(baseUrl + 1 + "/" + 1);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-//            conn.setRequestProperty("Content-type", "application/xml");
-            System.out.println("Response code: " + conn.getResponseCode()); /* 연결 자체에 대한 확인이 필요하므로 추가합니다.*/
-            System.out.println("test"); /* 연결 자체에 대한 확인이 필요하므로 추가합니다.*/
-            BufferedReader rd;
-
-            // 서비스코드가 정상이면 200~300사이의 숫자가 나옵니다.
-            if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            } else {
-                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-            }
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = rd.readLine()) != null) {
-                sb.append(line);
-            }
-            rd.close();
-            conn.disconnect();
-            System.out.println(sb.toString());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (ProtocolException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return lostItemVo;
     }
 }
