@@ -28,7 +28,6 @@ public class SchedulerService {
 
     @Value("${publicData.lostItem.baseUrl}")
     private String baseUrl;
-
     
     public void setLostItem() {
         
@@ -48,7 +47,7 @@ public class SchedulerService {
             LostItem findLostItem = lostItemRepository.findById(apiData.getID())
                     .orElseGet(LostItem::new);
 
-            if (findLostItem.getId().equals("")  || findLostItem.getId() ==  null) {
+            if ("".equals(findLostItem.getId()) || findLostItem.getId() == null) {
                 findLostItem.setId(apiData.getID());
             }
             findLostItem.setStatus(lostStatus);
@@ -62,8 +61,6 @@ public class SchedulerService {
 
             lostItemRepository.save(findLostItem);
         }
-
-
     }
 
     private LostStatus getLostStatus(String status) {
@@ -110,10 +107,10 @@ public class SchedulerService {
 
     private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
         LostItemVo lostItemVo;
-        baseUrl = baseUrl + startIndex + "/" + endIndex;
+        String apiCallUrl = baseUrl + startIndex + "/" + endIndex;
 
         try {
-            URL url = new URL(baseUrl);
+            URL url = new URL(apiCallUrl);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");

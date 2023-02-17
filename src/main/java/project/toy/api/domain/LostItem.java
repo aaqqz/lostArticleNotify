@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import java.time.LocalDate;
 
 @Entity
 @Data
@@ -16,10 +15,10 @@ public class LostItem extends BaseTimeEntity{
     @Id
     private String id;                  // 분실물 SEQ
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private LostStatus status;          // 분실물 상태
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private LostCategory category;      // 분실물 종류
 
     private String itemName;            // 분실물명
