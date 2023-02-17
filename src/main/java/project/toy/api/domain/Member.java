@@ -22,6 +22,8 @@ public class Member{
 
     private String email;
 
+    private String password;
+
     @OneToMany(mappedBy = "member")
     private List<Post> posts = new ArrayList<>();
 
@@ -32,8 +34,9 @@ public class Member{
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Member(String name, String email, List<Post> posts, List<PostUserLostItem> postUserLostItems, List<Comment> comments) {
+    public Member(String name, String email, String password, List<Post> posts, List<PostUserLostItem> postUserLostItems, List<Comment> comments) {
         this.name = name;
+        this.password = password;
         this.email = email;
         this.posts = posts;
         this.postUserLostItems = postUserLostItems;

@@ -19,8 +19,8 @@ import project.toy.api.response.PostResponse;
 import java.util.List;
 
 import static org.springframework.util.StringUtils.*;
-//import static project.toy.api.domain.QMember.member;
-//import static project.toy.api.domain.QPost.post;
+import static project.toy.api.domain.QMember.member;
+import static project.toy.api.domain.QPost.post;
 
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom {
@@ -29,44 +29,39 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     @Override
     public Page<PostResponse> search(PostSearch postSearch, Pageable pageable) {
-        return null;
+        List<PostResponse> result = queryFactory
+                .select(Projections.fields(PostResponse.class,
+                        post.id,
+                        post.title,
+                        post.content,
+                        post.createdBy,
+                        post.createdAt
+                ))
+                .from(post)
+                .where(
+                        titleLike(postSearch.getTitle()),
+                        contentLike(postSearch.getContent()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(post.id.desc())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(post.count())
+                .from(post)
+                .where(
+                        titleLike(postSearch.getTitle()),
+                        contentLike(postSearch.getContent())
+                );
+
+        return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
     }
 
-//    @Override
-//    public Page<PostResponse> search(PostSearch postSearch, Pageable pageable) {
-//        List<PostResponse> result = queryFactory
-//                .select(Projections.fields(PostResponse.class,
-//                        post.id,
-//                        post.title,
-//                        post.content,
-//                        post.createdBy,
-//                        post.createdAt
-//                ))
-//                .from(post)
-//                .where(
-//                        titleLike(postSearch.getTitle()),
-//                        contentLike(postSearch.getContent()))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .orderBy(post.id.desc())
-//                .fetch();
-//
-//        JPAQuery<Long> countQuery = queryFactory
-//                .select(post.count())
-//                .from(post)
-//                .where(
-//                        titleLike(postSearch.getTitle()),
-//                        contentLike(postSearch.getContent())
-//                );
-//
-//        return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
-//    }
-//
-//    private BooleanExpression titleLike(String title) {
-//        return hasText(title) ? post.title.contains(title) : null;
-//    }
-//
-//    private BooleanExpression contentLike(String content) {
-//        return hasText(content) ? post.content.contains(content) : null;
-//    }
+    private BooleanExpression titleLike(String title) {
+        return hasText(title) ? post.title.contains(title) : null;
+    }
+
+    private BooleanExpression contentLike(String content) {
+        return hasText(content) ? post.content.contains(content) : null;
+    }
 }

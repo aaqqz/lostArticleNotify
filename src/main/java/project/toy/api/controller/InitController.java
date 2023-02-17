@@ -34,7 +34,7 @@ public class InitController {
 
         @Transactional
         public void init() {
-            for (int i = 1; i <= 1; i++) {
+            for (int i = 1; i <= 35; i++) {
                 Post post = Post.builder()
                         .title("제목-" + i)
                         .content("내용-" + i)
@@ -47,7 +47,6 @@ public class InitController {
 
                 em.persist(comment);
             }
-            temp();
         }
 
 
