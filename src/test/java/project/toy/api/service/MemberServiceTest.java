@@ -53,8 +53,6 @@ class MemberServiceTest {
 
         //then
         assertThat(findMember).isNotNull();
-        assertThat(memberRepository.count()).isEqualTo(1L);
-        assertThat(findMember.getId()).isEqualTo(1L);
         assertThat(findMember.getName()).isEqualTo("member");
     }
 

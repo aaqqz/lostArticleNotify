@@ -29,8 +29,8 @@ class AuthServiceTest {
     void login() {
         // given
         Member member = Member.builder()
-                .email("sswwx1@naver.com")
-                .name("hk")
+                .email("test@naver.com")
+                .name("test")
                 .password("1234")
                 .build();
         memberRepository.save(member);
