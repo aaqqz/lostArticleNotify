@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostItem;
+import project.toy.api.domain.LostStatus;
 import project.toy.api.repository.LostItemRepository;
 import project.toy.api.scheduler.vo.LostItemVo;
 
@@ -39,86 +41,72 @@ public class SchedulerService {
 
     private void lostItemSave(List<LostItemVo.row> row) {
 
-        for (LostItemVo.row data : row) {
-            Optional<LostItem> lostItem = lostItemRepository.findById(data.getID());
+        for (LostItemVo.row apiData : row) {
+            LostStatus lostStatus = getLostStatus(apiData.getSTATUS());
+            LostCategory lostCategory = getLostCategory(apiData.getCATE());
 
-            if (lostItem.isEmpty()){
-//                lostItem.get();
+            LostItem findLostItem = lostItemRepository.findById(apiData.getID())
+                    .orElseGet(LostItem::new);
+
+            if (findLostItem.getId().equals("")  || findLostItem.getId() ==  null) {
+                findLostItem.setId(apiData.getID());
             }
+            findLostItem.setStatus(lostStatus);
+            findLostItem.setCategory(lostCategory);
+            findLostItem.setItemName(apiData.getGET_NAME());
+            findLostItem.setItemDetailInfo(apiData.getGET_THING());
+            findLostItem.setTakePlace(apiData.getTAKE_PLACE());
+            findLostItem.setTakePosition(apiData.getGET_POSITION());
+            findLostItem.setRegDate(apiData.getREG_DATE());
+            findLostItem.setGetDate(apiData.getGET_DATE());
 
-            //lostItemRepository.save(lostItem);
+            lostItemRepository.save(findLostItem);
         }
 
-        LostItem lostItem = LostItem.builder().build();
+
     }
 
-//    private void saveLostItem(LostItemVo lostItemVo) {
-//
-////        lostItemVo.getRow().stream()
-////                .map(v -> {
-////                    if (v.getCATE().equals("가방")) {
-////                        v.setCATE(LostCategory.BAG.toString());
-////                    }
-////                    if (v.getCATE().equals("가방")) {
-////                        v.setCATE(LostCategory.BAG.toString());
-////                    }
-////                    return v;
-////                }).collect(Collectors.toList())
-//
-//        for (LostItemVo.row row : lostItemVo.getRow()) {
-//
-//            switch (row.getCATE()) {
-//                case "가방":
-//                    result = lostItemBuilder(LostCategory.BAG);
-//                    break;
-//                case "지갑":
-//                    result = lostItemBuilder(LostCategory.WALLET);
-//                    break;
-//            }
-//
-//            LostItem result = LostItem.builder()
-//                    .id()
-//                    .itemName()
-//                    .regDate()
-//                    .category(result)
-//                    .build();
-//
-//            (result);
-//            lostItemRepository.save(result);
-////            lostItemType //persist
-//        }
-//
-//
-//    }
-//
-//    public LostItem lostItemBuilder(LostCategory lostCategory){
-//        LostItem lostItem = LostItem.builder()
-//                .category(lostCategory)
-//                .build();
-//
-//        return lostItem;
-//    }
-//
-//    public void lostItemUpdate() {
-//        // api 조회
-//        List<LostItemVo.row> row = lostItemApiCall(276744, 277844).getRow();
-//
-//        // db 조회
-//        List<LostItem> lostItems = lostItemRepository.findAll();
-//
-//        for(int i=0; i<row.size(); i++){
-//
-//            LostItem lostItem = lostItems.get(i);
-//            LostItemVo.row row1 = row.get(i);
-//
-//            LostItem build = lostItem.builder()
-//                    .status(row1.setSTATUS())
-//                    .itemName(row1.setCATE())
-//                    .build();
-//
-//            lostItemRepository.(build);
-//        }
-//    }
+    private LostStatus getLostStatus(String status) {
+        switch (status) {
+            case "경찰서이관":
+                return LostStatus.POLICE;
+            case "우체국이관":
+                return LostStatus.POST;
+            case "보관":
+                return LostStatus.KEEP;
+            case "수령":
+                return LostStatus.RECEIVE;
+            default:
+                return LostStatus.ETC;
+        }
+    }
+
+    private LostCategory getLostCategory(String category) {
+        switch (category) {
+            case "가방":
+                return LostCategory.BAG;
+            case "배낭":
+                return LostCategory.BACKPACK;
+            case "서류봉투":
+                return LostCategory.ENVELOPE;
+            case "쇼핑백":
+                return LostCategory.SHOPBAG;
+            case "옷":
+                return LostCategory.CLOTHES;
+            case "장난감":
+                return LostCategory.TOY;
+            case "지갑":
+                return LostCategory.WALLET;
+            case "책":
+                return LostCategory.BOOK;
+            case "파일":
+                return LostCategory.FILE;
+            case "핸드폰":
+                return LostCategory.MOBILE;
+            default:
+                return LostCategory.ETC;
+        }
+    }
 
     private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
         LostItemVo lostItemVo;

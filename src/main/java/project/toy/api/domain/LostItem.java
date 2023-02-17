@@ -1,7 +1,6 @@
 package project.toy.api.domain;
 
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,8 +9,9 @@ import javax.persistence.Id;
 import java.time.LocalDate;
 
 @Entity
+@Data
 @NoArgsConstructor
-public class LostItem {
+public class LostItem extends BaseTimeEntity{
 
     @Id
     private String id;                  // 분실물 SEQ
@@ -30,12 +30,12 @@ public class LostItem {
 
     private String takePosition;        // 수령위치(회사)
 
-    private LocalDate regDate;          // 등록일 (홈페이지 등록일)
+    private String regDate;          // 등록일 (홈페이지 등록일)
 
-    private LocalDate getDate;          // 수령일 (습득일)
+    private String getDate;          // 수령일 (습득일)
 
     @Builder
-    public LostItem(String id, LostStatus status, LostCategory category, String itemName, String itemDetailInfo, String takePlace, String takePosition, LocalDate regDate, LocalDate getDate) {
+    public LostItem(String id, LostStatus status, LostCategory category, String itemName, String itemDetailInfo, String takePlace, String takePosition, String regDate, String getDate) {
         this.id = id;
         this.status = status;
         this.category = category;
