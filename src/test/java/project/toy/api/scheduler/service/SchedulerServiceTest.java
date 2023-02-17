@@ -3,6 +3,7 @@ package project.toy.api.scheduler.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import project.toy.api.domain.LostItem;
 
 import java.io.IOException;
 
@@ -17,10 +18,15 @@ class SchedulerServiceTest {
     @Test
     void getLostItem() throws Exception {
         // given
-        schedulerService.lostItemUpdate();
+        schedulerService.setLostItem();
         // when
 
         // then
+    }
+
+    @Test
+    void test() {
+
     }
 
 }

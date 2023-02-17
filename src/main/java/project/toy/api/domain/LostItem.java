@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDate;
 
@@ -12,10 +14,12 @@ import java.time.LocalDate;
 public class LostItem {
 
     @Id
-    private Long id;                    // 분실물 SEQ
+    private String id;                  // 분실물 SEQ
 
+    @Enumerated(EnumType.ORDINAL)
     private LostStatus status;          // 분실물 상태
 
+    @Enumerated(EnumType.ORDINAL)
     private LostCategory category;      // 분실물 종류
 
     private String itemName;            // 분실물명
@@ -31,7 +35,7 @@ public class LostItem {
     private LocalDate getDate;          // 수령일 (습득일)
 
     @Builder
-    public LostItem(Long id, LostStatus status, LostCategory category, String itemName, String itemDetailInfo, String takePlace, String takePosition, LocalDate regDate, LocalDate getDate) {
+    public LostItem(String id, LostStatus status, LostCategory category, String itemName, String itemDetailInfo, String takePlace, String takePosition, LocalDate regDate, LocalDate getDate) {
         this.id = id;
         this.status = status;
         this.category = category;

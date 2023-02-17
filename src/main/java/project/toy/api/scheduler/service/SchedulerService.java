@@ -1,7 +1,6 @@
 package project.toy.api.scheduler.service;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +13,9 @@ import project.toy.api.scheduler.vo.LostItemVo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -27,17 +27,98 @@ public class SchedulerService {
     @Value("${publicData.lostItem.baseUrl}")
     private String baseUrl;
 
-    public void lostItemUpdate() {
-        LostItemVo lostItemVo = lostItemApiCall(1, 1);
-        log.info("lostItemUpdate={}", lostItemVo);
-        // todo start, end index logic
+    
+    public void setLostItem() {
+        
+        int listTotalCount = Integer.parseInt(lostItemApiCall(1, 1).getList_total_count());
 
-        saveLostItem(lostItemVo);
+        LostItemVo lostItemVo = lostItemApiCall(listTotalCount - 100, listTotalCount);
+
+        lostItemSave(lostItemVo.getRow());
     }
 
-    private void saveLostItem(LostItemVo lostItemVo) {
-        // todo lostItem save
+    private void lostItemSave(List<LostItemVo.row> row) {
+
+        for (LostItemVo.row data : row) {
+            Optional<LostItem> lostItem = lostItemRepository.findById(data.getID());
+
+            if (lostItem.isEmpty()){
+//                lostItem.get();
+            }
+
+            //lostItemRepository.save(lostItem);
+        }
+
+        LostItem lostItem = LostItem.builder().build();
     }
+
+//    private void saveLostItem(LostItemVo lostItemVo) {
+//
+////        lostItemVo.getRow().stream()
+////                .map(v -> {
+////                    if (v.getCATE().equals("가방")) {
+////                        v.setCATE(LostCategory.BAG.toString());
+////                    }
+////                    if (v.getCATE().equals("가방")) {
+////                        v.setCATE(LostCategory.BAG.toString());
+////                    }
+////                    return v;
+////                }).collect(Collectors.toList())
+//
+//        for (LostItemVo.row row : lostItemVo.getRow()) {
+//
+//            switch (row.getCATE()) {
+//                case "가방":
+//                    result = lostItemBuilder(LostCategory.BAG);
+//                    break;
+//                case "지갑":
+//                    result = lostItemBuilder(LostCategory.WALLET);
+//                    break;
+//            }
+//
+//            LostItem result = LostItem.builder()
+//                    .id()
+//                    .itemName()
+//                    .regDate()
+//                    .category(result)
+//                    .build();
+//
+//            (result);
+//            lostItemRepository.save(result);
+////            lostItemType //persist
+//        }
+//
+//
+//    }
+//
+//    public LostItem lostItemBuilder(LostCategory lostCategory){
+//        LostItem lostItem = LostItem.builder()
+//                .category(lostCategory)
+//                .build();
+//
+//        return lostItem;
+//    }
+//
+//    public void lostItemUpdate() {
+//        // api 조회
+//        List<LostItemVo.row> row = lostItemApiCall(276744, 277844).getRow();
+//
+//        // db 조회
+//        List<LostItem> lostItems = lostItemRepository.findAll();
+//
+//        for(int i=0; i<row.size(); i++){
+//
+//            LostItem lostItem = lostItems.get(i);
+//            LostItemVo.row row1 = row.get(i);
+//
+//            LostItem build = lostItem.builder()
+//                    .status(row1.setSTATUS())
+//                    .itemName(row1.setCATE())
+//                    .build();
+//
+//            lostItemRepository.(build);
+//        }
+//    }
 
     private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
         LostItemVo lostItemVo;

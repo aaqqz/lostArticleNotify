@@ -22,9 +22,9 @@ public class Scheduler {
     private final SchedulerService schedulerService;
 
     @Scheduled(cron = "0 0 0/1 * * *")
-    public void schedulerLostItemUpdate() {
-        log.info("##### schedulerLostItemUpdate Start #####");
-        schedulerService.lostItemUpdate();
-        log.info("##### schedulerLostItemUpdate End #####");
+    public void setLostItem() {
+        log.info("##### setLostItem Start #####");
+        schedulerService.setLostItem();
+        log.info("##### setLostItem End #####");
     }
 }
