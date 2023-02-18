@@ -8,12 +8,14 @@ spring:
       path: /h2-console
 
   datasource:
-    url: jdbc:h2:mem:toy
+    url: jdbc:h2:tcp://localhost/~/toy
     username: sa
     password:
     driver-class-name: org.h2.Driver
 
   jpa:
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
