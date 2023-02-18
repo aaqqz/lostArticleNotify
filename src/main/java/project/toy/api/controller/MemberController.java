@@ -20,5 +20,4 @@ public class MemberController {
         memberCreate.validate();
         memberService.join(memberCreate);
     }
-
 }

@@ -28,18 +28,18 @@ public class Member{
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
-    private List<PostUserLostItem> postUserLostItems = new ArrayList<>();
+    private List<MemberLostItem> memberLostItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     private List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public Member(String name, String email, String password, List<Post> posts, List<PostUserLostItem> postUserLostItems, List<Comment> comments) {
+    public Member(String name, String email, String password, List<Post> posts, List<MemberLostItem> memberLostItems, List<Comment> comments) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.posts = posts;
-        this.postUserLostItems = postUserLostItems;
+        this.memberLostItems = memberLostItems;
         this.comments = comments;
     }
 }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import project.toy.api.common.Common;
 import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostItem;
 import project.toy.api.domain.LostStatus;
@@ -39,10 +40,9 @@ public class SchedulerService {
     }
 
     private void lostItemSave(List<LostItemVo.row> row) {
-
         for (LostItemVo.row apiData : row) {
-            LostStatus lostStatus = getLostStatus(apiData.getSTATUS());
-            LostCategory lostCategory = getLostCategory(apiData.getCATE());
+            LostStatus lostStatus = Common.getLostStatus(apiData.getSTATUS());
+            LostCategory lostCategory = Common.getLostCategory(apiData.getCATE());
 
             LostItem findLostItem = lostItemRepository.findById(apiData.getID())
                     .orElseGet(LostItem::new);
@@ -63,47 +63,7 @@ public class SchedulerService {
         }
     }
 
-    private LostStatus getLostStatus(String status) {
-        switch (status) {
-            case "경찰서이관":
-                return LostStatus.POLICE;
-            case "우체국이관":
-                return LostStatus.POST;
-            case "보관":
-                return LostStatus.KEEP;
-            case "수령":
-                return LostStatus.RECEIVE;
-            default:
-                return LostStatus.ETC;
-        }
-    }
 
-    private LostCategory getLostCategory(String category) {
-        switch (category) {
-            case "가방":
-                return LostCategory.BAG;
-            case "배낭":
-                return LostCategory.BACKPACK;
-            case "서류봉투":
-                return LostCategory.ENVELOPE;
-            case "쇼핑백":
-                return LostCategory.SHOPBAG;
-            case "옷":
-                return LostCategory.CLOTHES;
-            case "장난감":
-                return LostCategory.TOY;
-            case "지갑":
-                return LostCategory.WALLET;
-            case "책":
-                return LostCategory.BOOK;
-            case "파일":
-                return LostCategory.FILE;
-            case "핸드폰":
-                return LostCategory.MOBILE;
-            default:
-                return LostCategory.ETC;
-        }
-    }
 
     private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
         LostItemVo lostItemVo;
