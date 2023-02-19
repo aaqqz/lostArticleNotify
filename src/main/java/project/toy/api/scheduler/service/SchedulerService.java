@@ -31,12 +31,15 @@ public class SchedulerService {
     private String baseUrl;
     
     public void setLostItem() {
-        
-        int listTotalCount = Integer.parseInt(lostItemApiCall(1, 1).getList_total_count());
+        try {
+            int listTotalCount = Integer.parseInt(lostItemApiCall(1, 1).getList_total_count());
 
-        LostItemVo lostItemVo = lostItemApiCall(listTotalCount - 100, listTotalCount);
+            LostItemVo lostItemVo = lostItemApiCall(listTotalCount - 100, listTotalCount);
 
-        lostItemSave(lostItemVo.getRow());
+            lostItemSave(lostItemVo.getRow());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void lostItemSave(List<LostItemVo.row> row) {

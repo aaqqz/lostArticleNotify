@@ -18,19 +18,16 @@ public class Comment extends BaseEntity{
 
     private String comment;
 
-    private int depth;
-
     @ManyToOne
-    @JoinColumn(name="memberId")
+    @JoinColumn(name="MEMBER_ID")
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name="postId")
+    @JoinColumn(name="POST_ID")
     private Post post;
 
     @Builder
-    public Comment(int depth, String comment, Member member, Post post){
-        this.depth = depth;
+    public Comment(String comment, Member member, Post post){
         this.comment = comment;
         this.member = member;
         this.post = post;
