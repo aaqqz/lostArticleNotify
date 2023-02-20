@@ -8,4 +8,7 @@ import java.util.Optional;
 public interface AuthRepository extends CrudRepository<Member, Long> {
 
     Optional<Member> findByEmailAndPassword(String email, String password);
+
+    // 추가
+    Optional<Member> findByEmail(String email);
 }
