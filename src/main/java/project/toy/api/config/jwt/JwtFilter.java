@@ -2,7 +2,6 @@ package project.toy.api.config.jwt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -26,12 +25,12 @@ public class JwtFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        String jwt = resolveToken(httpServletRequest);
+        String jwtToken = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-        if(StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)){ // jwt validation
+        if(StringUtils.hasText(jwtToken) && jwtTokenProvider.validateToken(jwtToken)){ // jwt validation
 
-            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+            Authentication authentication = jwtTokenProvider.getAuthentication(jwtToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
 

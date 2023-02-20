@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import project.toy.api.domain.Member;
+import project.toy.api.config.data.CustomMemberDetails;
 
 import java.security.Key;
 import java.util.Arrays;
@@ -42,16 +42,21 @@ public class JwtTokenProvider implements InitializingBean {
 
     // 토큰 생성
     public String createToken(Authentication authentication) {
-        // 여기 확인 필요 todo
+
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        CustomMemberDetails principal = (CustomMemberDetails) authentication.getPrincipal();
+
         Date now = new Date();
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("role", "test") // 여기 확인 필요 todo
+                .setSubject(String.valueOf(principal.getId()))
+                .claim("name", principal.getName())
+//                .claim("email", principal.getEmail())
+//                .claim("password", principal.getPassword())
+                .claim("roleType", principal.getRoleType())
                 .signWith(key)
                 .setIssuedAt(now) // 발행일자
                 .setExpiration(new Date(now.getTime() + tokenValidityInMilliseconds)) // 만료일자
@@ -67,22 +72,25 @@ public class JwtTokenProvider implements InitializingBean {
                 .getBody();
 
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("role").toString().split(",")) // 여기 확인 필요 todo
+                Arrays.stream(claims.get("roleType").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-//        (claims.getSubject(), "", authorities)
-        Member principal = Member.builder()
-                .name(claims.getSubject())
-                .password("")
-                .roleType("test") // 여기 확인 필요 todo
+
+        CustomMemberDetails principal = CustomMemberDetails.builder()
+                .id(Long.parseLong(claims.getSubject()))
+                .name(String.valueOf(claims.get("name")))
+//                .email(String.valueOf(claims.get("email")))
+//                .password(String.valueOf(claims.get("password")))
+                .roleType(String.valueOf(claims.get("roleType")))
+                .roleType(authorities.toString())
                 .build();
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
     // token 유효성 검증
-    public boolean validateToken(String token) {
+    public boolean validateToken(String jwtToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.error("잘못된 JWT 서명입니다.");

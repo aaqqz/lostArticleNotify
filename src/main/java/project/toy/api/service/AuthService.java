@@ -16,7 +16,7 @@ public class AuthService {
     private final AuthRepository authRepository;
 
     public Member login(Login login) {
-        Member member = authRepository.findByEmailAndPassword(login.getEmail(), login.getPassword())
+        Member member = authRepository.findByEmailAndPassword(login.getId(), login.getPassword())
                 .orElseThrow(() -> new InvalidLoginInformation());
 
         return member;

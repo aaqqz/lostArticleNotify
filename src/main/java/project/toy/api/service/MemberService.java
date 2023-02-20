@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import project.toy.api.domain.Member;
+import project.toy.api.exception.MemberNotFound;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberCreate;
 
@@ -26,7 +27,7 @@ public class MemberService {
 
     public Member findOne(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("회원 없음")); // todo 상황에 맞는 exception 생성
+                .orElseThrow(() -> new MemberNotFound());
     }
 
     public List<Member> findMembers() {

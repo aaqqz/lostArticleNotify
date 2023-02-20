@@ -1,10 +1,9 @@
-package project.toy.api.config;
+package project.toy.api.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -56,15 +55,13 @@ public class SpringSecurityConfig {
                 /* HttpServletRequest를 사용하는 요청들에 대한 접근 제한 설정 */
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/authX", "/auth/login2").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/authX", "/auth/login2").permitAll()
+//                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 
                 /* jwtFilter 적용 */
                 .and()
                 .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-//                .and()
-//                .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

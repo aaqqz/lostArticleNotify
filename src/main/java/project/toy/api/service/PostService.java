@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import project.toy.api.config.security.SecurityUtils;
+import project.toy.api.domain.Member;
 import project.toy.api.domain.Post;
+import project.toy.api.exception.MemberNotFound;
 import project.toy.api.exception.PostNotFound;
+import project.toy.api.repository.MemberRepository;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;
@@ -13,19 +17,25 @@ import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
+
 
     public void write(PostCreate postCreate) {
+        Long aLong = SecurityUtils.currentMemberId();
+
+        Member member = memberRepository.findById(aLong)
+                .orElseThrow(() -> new MemberNotFound());
+
         Post post = Post.builder()
                 .title(postCreate.getTitle())
                 .content(postCreate.getContent())
+                .member(member)
                 .build();
         postRepository.save(post);
     }

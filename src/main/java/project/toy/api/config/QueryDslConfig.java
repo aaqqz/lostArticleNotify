@@ -4,6 +4,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import project.toy.api.domain.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,7 +26,12 @@ public class QueryDslConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider(){
-        // todo 로그인 개발후 id 값 생성으로 변경
-        return () -> Optional.of(UUID.randomUUID().toString()); // test 이기 때문에 작성 -> 스프링 시큐리티 등 에서 id 넣는다
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (null == authentication || !authentication.isAuthenticated()) {
+//            return null;
+//        }
+//        Member member = (Member) authentication.getPrincipal();
+//        return () -> Optional.of(member.getName()); // test 이기 때문에 작성 -> 스프링 시큐리티 등 에서 id 넣는다
+        return () -> Optional.of(UUID.randomUUID().toString());
     }
 }

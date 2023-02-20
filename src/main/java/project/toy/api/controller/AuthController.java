@@ -12,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +20,6 @@ import project.toy.api.config.data.MemberSession;
 import project.toy.api.config.jwt.JwtTokenProvider;
 import project.toy.api.domain.Member;
 import project.toy.api.request.Login;
-import project.toy.api.response.CommonResponse;
 import project.toy.api.response.SessionResponse;
 import project.toy.api.response.Token;
 import project.toy.api.service.AuthService;
@@ -74,7 +72,15 @@ public class AuthController {
 
     @PostMapping("/authO")
     public String authO() {
+
         log.info("authO >>>>>>>>>>>>>>>>>");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (null == authentication || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Member member = (Member) authentication.getPrincipal();
+        log.info("#######={}", member.getName());
+
         return "authO";
     }
     @PostMapping("/authX")
@@ -85,15 +91,14 @@ public class AuthController {
 
     @PostMapping("/auth/login2")
     public ResponseEntity<Token> login2(@RequestBody @Valid Login login) {
-
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getId(), login.getPassword());
 
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         // authenticate 매서드가 실행될 때 CustomMemberDetailsService 에서 만든 loadUserByUsername 메서드가 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtTokenProvider.createToken(authentication);
 
         HttpHeaders httpHeaders = new HttpHeaders();

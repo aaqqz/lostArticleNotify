@@ -11,14 +11,14 @@ import javax.validation.constraints.NotBlank;
 public class Login {
 
     @NotBlank(message = "아이디를 입력하세요.")
-    private String email;
+    private String id;
 
     @NotBlank(message = "비밀번호를 입력하세요.")
     private String password;
 
     @Builder
-    public Login(String email, String password) {
-        this.email = email;
+    public Login(String id, String password) {
+        this.id = id;
         this.password = password;
     }
 }
