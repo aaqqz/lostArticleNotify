@@ -36,7 +36,7 @@ public class CustomUserDetailService implements UserDetailsService {
                 .id(member.getId())
                 .name(member.getName())
                 .email(member.getEmail())
-                .password(passwordEncoder.encode(member.getPassword()))
+                .password(member.getPassword())
                 .roleType(member.getRoleType())
                 .build();
 
