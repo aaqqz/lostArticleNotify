@@ -28,7 +28,7 @@ public class CommonResponse {
         return common;
     }
 
-    public static CommonResponse defaultCommonResponse(String msg, Object body) {
+    public static CommonResponse defaultCommonResponse(Object body) {
         CommonResponse common = CommonResponse.builder()
                 .status(200)
                 .msg("응답 성공입니다.")

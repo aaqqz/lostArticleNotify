@@ -12,4 +12,11 @@ public class SecurityUtils {
 
         return principal.getId();
     }
+
+    public static String currentMemberName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomMemberDetails principal = (CustomMemberDetails) authentication.getPrincipal();
+
+        return principal.getName();
+    }
 }

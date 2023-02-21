@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import project.toy.api.domain.Member;
 import project.toy.api.domain.Post;
+import project.toy.api.repository.MemberRepository;
 import project.toy.api.repository.PostRepository;
+import project.toy.api.request.Login;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;
 
@@ -40,9 +43,25 @@ class PostControllerTest {
     @Autowired
     PostRepository postRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
     @BeforeEach
-    void clear() {
+    void clear() throws Exception {
         postRepository.deleteAll();
+
+
+        Member findMember = memberRepository.findById(2L).get();
+        Login login = Login.builder()
+                .id(findMember.getEmail())
+                .password(findMember.getPassword())
+                .build();
+        String json = objectMapper.writeValueAsString(login);
+        mockMvc.perform(post("/auth/login")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test
