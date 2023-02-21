@@ -1,8 +1,5 @@
 package project.toy.api.repository;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -11,15 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.util.StringUtils;
-import project.toy.api.domain.Post;
 import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
 
 import java.util.List;
 
-import static org.springframework.util.StringUtils.*;
-import static project.toy.api.domain.QMember.member;
+import static org.springframework.util.StringUtils.hasText;
 import static project.toy.api.domain.QPost.post;
 
 @RequiredArgsConstructor

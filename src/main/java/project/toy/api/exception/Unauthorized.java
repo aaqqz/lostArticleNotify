@@ -1,7 +1,5 @@
 package project.toy.api.exception;
 
-import lombok.Getter;
-
 /**
  * status -> 401
  */

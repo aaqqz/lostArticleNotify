@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import project.toy.api.config.data.CustomMemberDetails;
+import project.toy.api.exception.JwtAuthFail;
 
 import java.security.Key;
 import java.util.Arrays;

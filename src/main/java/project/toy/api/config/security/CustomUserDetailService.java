@@ -1,4 +1,4 @@
-package project.toy.api.service;
+package project.toy.api.config.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

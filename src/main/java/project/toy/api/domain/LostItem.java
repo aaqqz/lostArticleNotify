@@ -29,9 +29,9 @@ public class LostItem extends BaseTimeEntity{
 
     private String takePosition;        // 수령위치(회사)
 
-    private String regDate;          // 등록일 (홈페이지 등록일)
+    private String regDate;             // 등록일 (홈페이지 등록일)
 
-    private String getDate;          // 수령일 (습득일)
+    private String getDate;             // 수령일 (습득일)
 
     @Builder
     public LostItem(String id, LostStatus status, LostCategory category, String itemName, String itemDetailInfo, String takePlace, String takePosition, String regDate, String getDate) {

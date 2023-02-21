@@ -3,10 +3,8 @@ package project.toy.api.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Getter

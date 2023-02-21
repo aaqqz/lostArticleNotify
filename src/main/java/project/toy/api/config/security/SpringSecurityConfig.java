@@ -55,7 +55,7 @@ public class SpringSecurityConfig {
                 /* HttpServletRequest를 사용하는 요청들에 대한 접근 제한 설정 */
                 .and()
                 .authorizeRequests()
-                .antMatchers("/authX", "/auth/login2").permitAll()
+                .antMatchers("/authX", "/auth/login").permitAll()
 //                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 

@@ -2,17 +2,11 @@ package project.toy.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestController;
-import project.toy.api.domain.Comment;
-import project.toy.api.domain.Post;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 //@Profile("local")
 @Component

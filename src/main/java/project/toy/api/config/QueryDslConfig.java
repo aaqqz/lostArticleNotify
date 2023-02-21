@@ -4,9 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import project.toy.api.domain.Member;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
