@@ -8,7 +8,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class LostItem extends BaseTimeEntity{
 

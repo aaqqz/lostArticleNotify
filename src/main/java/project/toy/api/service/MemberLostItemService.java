@@ -7,6 +7,7 @@ import project.toy.api.common.Common;
 import project.toy.api.domain.Member;
 import project.toy.api.domain.MemberLostItem;
 import project.toy.api.exception.MemberNotFound;
+import project.toy.api.repository.MemberLostItemRepository;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberLostItemCreate;
 
@@ -15,6 +16,7 @@ import project.toy.api.request.MemberLostItemCreate;
 public class MemberLostItemService {
 
     private final MemberRepository memberRepository;
+    private final MemberLostItemRepository memberLostItemRepository;
 
     public void save(MemberLostItemCreate memberLostItemCreate) {
         Member findMember = memberRepository.findById(memberLostItemCreate.getMemberId())
@@ -26,5 +28,7 @@ public class MemberLostItemService {
                 .itemName(memberLostItemCreate.getItemName())
                 .itemDetailInfo(memberLostItemCreate.getItemDetailInfo())
                 .build();
+
+        memberLostItemRepository.save(memberLostItem);
     }
 }

@@ -20,6 +20,7 @@ public class Common {
     }
 
     public static LostCategory getLostCategory(String category) {
+        LostCategory.valueOf("BAG");
         switch (category) {
             case "가방":
                 return LostCategory.BAG;

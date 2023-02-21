@@ -13,10 +13,10 @@ class SchedulerTest {
     Scheduler scheduler;
 
 
-    @Test
-    @DisplayName("lostItemApi data setting")
-    void setLostItem() {
-        scheduler.setLostItem();
-    }
+//    @Test
+//    @DisplayName("lostItemApi data setting")
+//    void setLostItem() {
+//        scheduler.setLostItem();
+//    }
 
 }

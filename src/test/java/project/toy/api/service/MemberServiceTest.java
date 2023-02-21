@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import project.toy.api.domain.Member;
+import project.toy.api.domain.SendMail;
+import project.toy.api.repository.MemberLostItemRepositoryCustom;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberCreate;
 
@@ -18,6 +20,9 @@ class MemberServiceTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    SendMail sendMail;
 
     @BeforeEach
     void clean() {
@@ -59,9 +64,12 @@ class MemberServiceTest {
     @Test
     void 회원_단건_조회_에러() {
         //given
-
+//        String email = memberLostItemRepositoryCustom.findByUserId(1L);
         //when
 
+//        System.out.println(email);
         //then
+
+        sendMail.send();
     }
 }
