@@ -18,7 +18,6 @@ import project.toy.api.repository.MemberRepository;
 public class CustomUserDetailService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String memberEmail) throws UsernameNotFoundException {

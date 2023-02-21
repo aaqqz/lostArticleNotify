@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.test.context.support.WithUserDetails;
 import project.toy.api.domain.Post;
 import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.PostRepository;
@@ -40,6 +41,7 @@ class PostServiceTest {
     }
 
     @Test
+    @WithUserDetails(value = "admin@naver.com")
     @DisplayName("게시글 등록")
     void postWrite() {
         // given
