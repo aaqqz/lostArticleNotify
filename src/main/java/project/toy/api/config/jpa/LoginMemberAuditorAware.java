@@ -11,6 +11,6 @@ public class LoginMemberAuditorAware implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(SecurityUtils.currentMemberName());
+        return Optional.ofNullable(SecurityUtils.currentMemberName());
     }
 }
