@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @SpringBootTest
+@WithUserDetails("admin@naver.com")
 class PostServiceTest {
 
     @Autowired
@@ -41,7 +42,6 @@ class PostServiceTest {
     }
 
     @Test
-    @WithUserDetails(value = "admin@naver.com")
     @DisplayName("게시글 등록")
     void postWrite() {
         // given
@@ -58,8 +58,8 @@ class PostServiceTest {
         Post post = postRepository.findAll().get(0);
         assertThat(post.getTitle()).isEqualTo("제목");
         assertThat(post.getContent()).isEqualTo("내용");
+        assertThat(post.getCreatedBy()).isEqualTo("nmAdmin");
         assertThat(post.getCreatedAt()).isNotNull();
-        assertThat(post.getCreatedBy()).isNotNull();
     }
 
     @Test
@@ -80,8 +80,8 @@ class PostServiceTest {
         assertThat(postRepository.count()).isEqualTo(1L);
         assertThat(post.getTitle()).isEqualTo("제목");
         assertThat(post.getContent()).isEqualTo("내용");
+        assertThat(post.getCreatedBy()).isEqualTo("nmAdmin");
         assertThat(post.getCreatedAt()).isNotNull();
-        assertThat(post.getCreatedBy()).isNotNull();
     }
 
     @Test
@@ -125,7 +125,7 @@ class PostServiceTest {
 //                                .createdAt(post.getCreatedAt())
 //                                .build())
 //                .collect(Collectors.toList());
-        System.out.println("result.getContent() = " + result.getContent());
+        log.info("result={}", result.getContent());
         assertThat(result.getSize()).isEqualTo(3);
         assertThat(result.getContent()).extracting("title").containsExactly("제목-29", "제목-28", "제목-27");
 

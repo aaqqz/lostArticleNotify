@@ -8,12 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
-import project.toy.api.domain.Member;
 import project.toy.api.domain.Post;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.repository.PostRepository;
-import project.toy.api.request.Login;
 import project.toy.api.request.PostCreate;
 import project.toy.api.request.PostEdit;
 
@@ -32,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithUserDetails("admin@naver.com")
 class PostControllerTest {
 
     @Autowired
@@ -47,21 +47,8 @@ class PostControllerTest {
     MemberRepository memberRepository;
 
     @BeforeEach
-    void clear() throws Exception {
+    void clear() {
         postRepository.deleteAll();
-
-
-        Member findMember = memberRepository.findById(2L).get();
-        Login login = Login.builder()
-                .id(findMember.getEmail())
-                .password(findMember.getPassword())
-                .build();
-        String json = objectMapper.writeValueAsString(login);
-        mockMvc.perform(post("/auth/login")
-                        .contentType(APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isOk())
-                .andDo(print());
     }
 
     @Test
@@ -83,7 +70,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 등록_제목 null")
+    @DisplayName("게시글 등록_제목 empty")
     void postWriteNoTitle() throws Exception {
         // given
         PostCreate postCreate = PostCreate.builder()
@@ -104,7 +91,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("게시글 등록_내용 null")
+    @DisplayName("게시글 등록_내용 empty")
     void postWriteNoContent() throws Exception {
         // given
         PostCreate postCreate = PostCreate.builder()
@@ -167,7 +154,10 @@ class PostControllerTest {
         Post post = postRepository.findAll().get(0);
         assertThat(post.getTitle()).isEqualTo("제목");
         assertThat(post.getContent()).isEqualTo("내용");
-
+        assertThat(post.getCreatedBy()).isEqualTo("nmAdmin");
+        assertThat(post.getCreatedAt()).isNotNull();
+        assertThat(post.getLastModifiedBy()).isEqualTo("nmAdmin");
+        assertThat(post.getLastModifiedAt()).isNotNull();
     }
 
     @Test
@@ -222,15 +212,12 @@ class PostControllerTest {
         postRepository.saveAll(posts);
 
         // expected
-        mockMvc.perform(get("/post?page=0&size=10&title=3&content=내용")
-                        //.contentType(APPLICATION_JSON)
-                )
+        mockMvc.perform(get("/post?page=0&size=10&title=3&content=내용"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()", is(4)))
                 .andExpect(jsonPath(("$.content[0].title")).value("제목-30"))
                 .andExpect(jsonPath(("$.content[1].title")).value("제목-23"))
                 .andDo(print());
-//        import static org.hamcrest.Matchers.is;
     }
 
     @Test

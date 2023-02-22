@@ -17,8 +17,6 @@ import project.toy.api.request.PostEdit;
 import project.toy.api.request.PostSearch;
 import project.toy.api.response.PostResponse;
 
-
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -26,7 +24,6 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-
 
     @Transactional
     public void write(PostCreate postCreate) {
@@ -67,6 +64,7 @@ public class PostService {
         post.edit(postEdit.getTitle(), postEdit.getContent());
     }
 
+    @Transactional
     public void delete(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFound());
