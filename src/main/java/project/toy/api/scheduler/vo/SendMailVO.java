@@ -4,13 +4,13 @@ import lombok.*;
 import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostStatus;
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 public class SendMailVO {
 
     private String email;
+
+    private LostStatus status;
 
     private LostCategory category;
 
@@ -19,8 +19,4 @@ public class SendMailVO {
     private String itemDetailInfo;
 
     private String takePosition;
-
-    private LostStatus status;
-
-
 }

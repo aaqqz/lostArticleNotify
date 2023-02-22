@@ -7,11 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.toy.api.common.Common;
-import project.toy.api.domain.LostCategory;
-import project.toy.api.domain.LostItem;
-import project.toy.api.domain.LostStatus;
+import project.toy.api.domain.*;
 import project.toy.api.repository.LostItemRepository;
+import project.toy.api.repository.MemberLostItemRepository;
+import project.toy.api.scheduler.api.LostItemService;
 import project.toy.api.scheduler.vo.LostItemVo;
+import project.toy.api.scheduler.vo.SendMailVO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.io.InputStreamReader;
 import java.net.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,7 +31,12 @@ public class SchedulerService {
 
     @Value("${publicData.lostItem.baseUrl}")
     private String baseUrl;
-    
+
+    private final MemberLostItemRepository memberLostItemRepository;
+    private final SendMail sendMail;
+    private final LostItemService lostItemService;
+
+    // ##### setLostItem #####
     public void setLostItem() {
         try {
             int listTotalCount = Integer.parseInt(lostItemApiCall(1, 1).getList_total_count());
@@ -38,7 +45,7 @@ public class SchedulerService {
 
             lostItemSave(lostItemVo.getRow());
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("errorMessage", e);
         }
     }
 
@@ -65,8 +72,6 @@ public class SchedulerService {
             lostItemRepository.save(findLostItem);
         }
     }
-
-
 
     private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
         LostItemVo lostItemVo;
@@ -101,4 +106,24 @@ public class SchedulerService {
 
         return lostItemVo;
     }
+    // ##### setLostItem #####
+
+    // ##### sendEmail #####
+    public void sendEmail() {
+        List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
+        log.info("memberLostItems={}", memberLostItems);
+//        List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
+//        List<SendMailVO> mails =  memberLostItems.stream().flatMap(memberItem ->
+//                lostItemService.findLostItem(memberItem).stream().map(item -> {
+//                    SendMailVO sendMailVO = new SendMailVO();
+//                    sendMailVO.setItemName(item.getItemName());
+//                    sendMailVO.setCategory(item.getCategory());
+//                    sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
+//                    return sendMailVO;
+//                })).collect(Collectors.toList());
+//
+//        Long sendCount = mails.stream().peek(sendMail::send).count();
+//        System.out.println("이메일이 총 " + sendCount + "건 발송 되었습니다.");
+    }
+    // ##### sendEmail #####
 }
