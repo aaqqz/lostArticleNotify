@@ -3,6 +3,7 @@ package project.toy.api.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,10 +32,9 @@ class AuthControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    public static String token;
-
-    @BeforeAll
-    void makeToken() throws Exception {
+    @Test
+    @DisplayName("로그인_token return")
+    void login() throws Exception {
         // given
         Login login = Login.builder()
                 .id("user@naver.com")
@@ -42,7 +42,7 @@ class AuthControllerTest {
                 .build();
         String json = objectMapper.writeValueAsString(login);
 
-        // expected
+        // when
         MvcResult result = mockMvc.perform(post("/auth/login")
                         .contentType(APPLICATION_JSON)
                         .content(json))
@@ -50,45 +50,9 @@ class AuthControllerTest {
                 .andDo(print())
                 .andReturn();
 
+        //then
         String resultToken = result.getResponse().getContentAsString();
         Map<String, String> map = objectMapper.readValue(resultToken, new TypeReference<>() {});
-        token = map.get("token");
+        Assertions.assertThat(map.get("token")).isNotEmpty();
     }
-
-    @Test
-    @DisplayName("로그인 성공")
-    void authLogin() throws Exception {
-
-        mockMvc.perform(post("/authX")
-                        .contentType(APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andDo(print());
-        System.out.println("dddddddddddd");
-    }
-
-    @Test
-    @DisplayName("로그인 성공2")
-    void authLogin3() throws Exception {
-
-        mockMvc.perform(post("/authX")
-                        .contentType(APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andDo(print());
-        System.out.println("1111111");
-    }
-    @Test
-    @DisplayName("로그인 성공1")
-    void authLogin2() throws Exception {
-
-        mockMvc.perform(post("/authX")
-                        .contentType(APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andDo(print());
-        System.out.println("6666666");
-    }
-
-
 }
