@@ -4,14 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import project.toy.api.domain.MemberLostItem;
-import project.toy.api.domain.SendMail;
-import project.toy.api.repository.MemberLostItemRepository;
 import project.toy.api.scheduler.service.SchedulerService;
-import project.toy.api.scheduler.vo.SendMailVO;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -27,10 +20,6 @@ public class Scheduler {
      ***********************************************************************************************/
 
     private final SchedulerService schedulerService;
-//    private final LostItemService lostItemService;
-//    private final MemberLostItemRepository memberLostItemRepository;
-//
-//    private final SendMail sendMail;
 
     @Scheduled(cron = "0 0 0/1 * * *")
     public void setLostItem() {
@@ -42,7 +31,7 @@ public class Scheduler {
     @Scheduled(cron = "0 0 0/1 * * *")
     public void sendEmail(){
         log.info("##### sendEmail Start #####");
-        schedulerService.sendEmail();
+        schedulerService.matchingItemSendEmail();
         log.info("##### sendEmail End #####");
     }
 }

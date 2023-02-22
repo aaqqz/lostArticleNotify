@@ -6,24 +6,29 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.toy.api.common.Common;
-import project.toy.api.domain.*;
+import project.toy.api.domain.LostCategory;
+import project.toy.api.domain.LostItem;
+import project.toy.api.domain.LostStatus;
+import project.toy.api.domain.MemberLostItem;
 import project.toy.api.repository.LostItemRepository;
 import project.toy.api.repository.MemberLostItemRepository;
-import project.toy.api.scheduler.api.LostItemService;
 import project.toy.api.scheduler.vo.LostItemVo;
 import project.toy.api.scheduler.vo.SendMailVO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SchedulerService {
 
@@ -34,7 +39,6 @@ public class SchedulerService {
 
     private final MemberLostItemRepository memberLostItemRepository;
     private final SendMail sendMail;
-    private final LostItemService lostItemService;
 
     // ##### setLostItem #####
     public void setLostItem() {
@@ -50,6 +54,7 @@ public class SchedulerService {
     }
 
     private void lostItemSave(List<LostItemVo.row> row) {
+        List<LostItem> lostItems = new ArrayList<>();
         for (LostItemVo.row apiData : row) {
             LostStatus lostStatus = Common.getLostStatus(apiData.getSTATUS());
             LostCategory lostCategory = Common.getLostCategory(apiData.getCATE());
@@ -69,8 +74,9 @@ public class SchedulerService {
             findLostItem.setRegDate(apiData.getREG_DATE());
             findLostItem.setGetDate(apiData.getGET_DATE());
 
-            lostItemRepository.save(findLostItem);
+            lostItems.add(findLostItem);
         }
+        lostItemRepository.saveAll(lostItems);
     }
 
     private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
@@ -109,21 +115,24 @@ public class SchedulerService {
     // ##### setLostItem #####
 
     // ##### sendEmail #####
-    public void sendEmail() {
+    public void matchingItemSendEmail() {
         List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
         log.info("memberLostItems={}", memberLostItems);
-//        List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
-//        List<SendMailVO> mails =  memberLostItems.stream().flatMap(memberItem ->
-//                lostItemService.findLostItem(memberItem).stream().map(item -> {
-//                    SendMailVO sendMailVO = new SendMailVO();
-//                    sendMailVO.setItemName(item.getItemName());
-//                    sendMailVO.setCategory(item.getCategory());
-//                    sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
-//                    return sendMailVO;
-//                })).collect(Collectors.toList());
-//
-//        Long sendCount = mails.stream().peek(sendMail::send).count();
-//        System.out.println("이메일이 총 " + sendCount + "건 발송 되었습니다.");
+
+        List<SendMailVO> mails = memberLostItems.stream()
+                .flatMap(memberItem ->
+                        lostItemRepository.findLostItem(memberItem).stream()
+                                .map(item -> {
+                                    SendMailVO sendMailVO = new SendMailVO();
+                                    sendMailVO.setItemName(item.getItemName());
+                                    sendMailVO.setCategory(item.getCategory());
+                                    sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
+                                    return sendMailVO;
+                                })).collect(Collectors.toList());
+
+        log.info("mails={}", mails);
+        Long sendCount = mails.stream().peek(sendMail::send).count();
+        log.info("이메일이 총 {}건 발송 되었습니다.", sendCount);
     }
     // ##### sendEmail #####
 }

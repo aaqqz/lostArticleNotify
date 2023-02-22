@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import project.toy.api.domain.Member;
-import project.toy.api.domain.SendMail;
-import project.toy.api.repository.MemberLostItemRepositoryCustom;
+import project.toy.api.scheduler.service.SendMail;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberCreate;
 
