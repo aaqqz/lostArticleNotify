@@ -6,7 +6,7 @@ import project.toy.api.domain.LostStatus;
 
 @Data
 @NoArgsConstructor
-public class SendMailVO {
+public class SendMailVo {
 
     private String email;
 

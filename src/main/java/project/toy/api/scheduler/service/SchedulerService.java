@@ -15,7 +15,7 @@ import project.toy.api.domain.MemberLostItem;
 import project.toy.api.repository.LostItemRepository;
 import project.toy.api.repository.MemberLostItemRepository;
 import project.toy.api.scheduler.vo.LostItemVo;
-import project.toy.api.scheduler.vo.SendMailVO;
+import project.toy.api.scheduler.vo.SendMailVo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -119,15 +119,15 @@ public class SchedulerService {
         List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
         log.info("memberLostItems={}", memberLostItems);
 
-        List<SendMailVO> mails = memberLostItems.stream()
+        List<SendMailVo> mails = memberLostItems.stream()
                 .flatMap(memberItem ->
                         lostItemRepository.findLostItem(memberItem).stream()
                                 .map(item -> {
-                                    SendMailVO sendMailVO = new SendMailVO();
-                                    sendMailVO.setItemName(item.getItemName());
-                                    sendMailVO.setCategory(item.getCategory());
-                                    sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
-                                    return sendMailVO;
+                                    SendMailVo sendMailVo = new SendMailVo();
+                                    sendMailVo.setItemName(item.getItemName());
+                                    sendMailVo.setCategory(item.getCategory());
+                                    sendMailVo.setItemDetailInfo(item.getItemDetailInfo());
+                                    return sendMailVo;
                                 })).collect(Collectors.toList());
 
         log.info("mails={}", mails);

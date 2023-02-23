@@ -14,8 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class MemberLostItem extends BaseEntity{
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LOSTITEM_ID")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEMBER_LOST_ITEM_ID")
     private Long id;
 
     @ManyToOne
