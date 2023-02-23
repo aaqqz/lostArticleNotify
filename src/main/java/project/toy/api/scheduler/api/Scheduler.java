@@ -14,6 +14,7 @@ import project.toy.api.repository.MemberLostItemRepositoryCustom;
 import project.toy.api.scheduler.service.SchedulerService;
 import project.toy.api.scheduler.vo.LostItemVo;
 import project.toy.api.scheduler.vo.SendMailVO;
+import project.toy.api.vo.MemberLostItemVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,17 +50,24 @@ public class Scheduler {
 
     @Scheduled(cron = "0 0 0/1 * * *")
     public void getLostItem(){
-        List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
+        List<MemberLostItemVO> memberLostItems = memberLostItemRepository.findMemberLostItems();
         List<SendMailVO> mails =  memberLostItems.stream().flatMap(memberItem ->
                 lostItemService.findLostItem(memberItem).stream().map(item -> {
                     SendMailVO sendMailVO = new SendMailVO();
+                    sendMailVO.setEmail(memberItem.getEmail());
                     sendMailVO.setItemName(item.getItemName());
                     sendMailVO.setCategory(item.getCategory());
                     sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
                     return sendMailVO;
                 })).collect(Collectors.toList());
 
-        Long sendCount = mails.stream().peek(sendMail::send).count();
-        System.out.println("이메일이 총 " + sendCount + "건 발송 되었습니다.");
+//        System.out.println(mails);
+//        for (SendMailVO mail : mails) {
+//            sendMail.send(mail);
+//            sendCount ++;
+//        }
+        System.out.println(mails);
+//        mails.forEach(sendMail::send);
+//        System.out.println("이메일이 총 " + sendCount + "건 발송 되었습니다.");
     }
 }

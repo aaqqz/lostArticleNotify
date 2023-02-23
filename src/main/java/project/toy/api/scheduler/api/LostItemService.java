@@ -7,6 +7,7 @@ import project.toy.api.domain.LostItem;
 import project.toy.api.domain.MemberLostItem;
 import project.toy.api.repository.LostItemRepository;
 import project.toy.api.repository.LostItemRepositoryCustom;
+import project.toy.api.vo.MemberLostItemVO;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class LostItemService {
 
     private final LostItemRepositoryCustom lostItemRepositoryCustom;
 
-    public List<LostItem> findLostItem(MemberLostItem memberItem) {
+    public List<LostItem> findLostItem(MemberLostItemVO memberItem) {
 
         return lostItemRepositoryCustom.findLostItem(memberItem);
     }

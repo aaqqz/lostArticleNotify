@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import project.toy.api.domain.LostItem;
 import project.toy.api.domain.MemberLostItem;
+import project.toy.api.vo.MemberLostItemVO;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class LostItemRepositoryImpl implements LostItemRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
     @Override
-    public List<LostItem> findLostItem(MemberLostItem memberItem) {
+    public List<LostItem> findLostItem(MemberLostItemVO memberItem) {
         List<LostItem> result = queryFactory.select(Projections.fields(LostItem.class,
                         lostItem.id,
                         lostItem.itemName,

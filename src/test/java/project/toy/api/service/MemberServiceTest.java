@@ -70,6 +70,6 @@ class MemberServiceTest {
 //        System.out.println(email);
         //then
 
-        sendMail.send();
+//        sendMail.send();
     }
 }
