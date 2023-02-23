@@ -14,8 +14,9 @@ import project.toy.api.domain.LostStatus;
 import project.toy.api.domain.MemberLostItem;
 import project.toy.api.repository.LostItemRepository;
 import project.toy.api.repository.MemberLostItemRepository;
-import project.toy.api.scheduler.vo.LostItemVo;
-import project.toy.api.scheduler.vo.SendMailVo;
+import project.toy.api.scheduler.vo.LostItemVO;
+import project.toy.api.scheduler.vo.SendMailVO;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,17 +46,17 @@ public class SchedulerService {
         try {
             int listTotalCount = Integer.parseInt(lostItemApiCall(1, 1).getList_total_count());
 
-            LostItemVo lostItemVo = lostItemApiCall(listTotalCount - 100, listTotalCount);
+            LostItemVO lostItemVO = lostItemApiCall(listTotalCount - 100, listTotalCount);
 
-            lostItemSave(lostItemVo.getRow());
+            lostItemSave(lostItemVO.getRow());
         } catch (Exception e) {
             log.error("errorMessage", e);
         }
     }
 
-    private void lostItemSave(List<LostItemVo.row> row) {
+    private void lostItemSave(List<LostItemVO.row> row) {
         List<LostItem> lostItems = new ArrayList<>();
-        for (LostItemVo.row apiData : row) {
+        for (LostItemVO.row apiData : row) {
             LostStatus lostStatus = Common.getLostStatus(apiData.getSTATUS());
             LostCategory lostCategory = Common.getLostCategory(apiData.getCATE());
 
@@ -79,8 +80,8 @@ public class SchedulerService {
         lostItemRepository.saveAll(lostItems);
     }
 
-    private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
-        LostItemVo lostItemVo;
+    private LostItemVO lostItemApiCall(int startIndex, int endIndex) {
+        LostItemVO lostItemVO;
         String apiCallUrl = baseUrl + startIndex + "/" + endIndex;
 
         try {
@@ -101,16 +102,16 @@ public class SchedulerService {
 
             JsonObject jsonObject = new Gson().fromJson(sb.toString(), JsonObject.class);
             if ( jsonObject.has("lostArticleInfo")) {
-                lostItemVo = new Gson().fromJson(jsonObject.get("lostArticleInfo"), LostItemVo.class);
+                lostItemVO = new Gson().fromJson(jsonObject.get("lostArticleInfo"), LostItemVO.class);
             } else{
-                lostItemVo = new Gson().fromJson(jsonObject, LostItemVo.class);
+                lostItemVO = new Gson().fromJson(jsonObject, LostItemVO.class);
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return lostItemVo;
+        return lostItemVO;
     }
     // ##### setLostItem #####
 
@@ -119,15 +120,15 @@ public class SchedulerService {
         List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
         log.info("memberLostItems={}", memberLostItems);
 
-        List<SendMailVo> mails = memberLostItems.stream()
+        List<SendMailVO> mails = memberLostItems.stream()
                 .flatMap(memberItem ->
                         lostItemRepository.findLostItem(memberItem).stream()
                                 .map(item -> {
-                                    SendMailVo sendMailVo = new SendMailVo();
-                                    sendMailVo.setItemName(item.getItemName());
-                                    sendMailVo.setCategory(item.getCategory());
-                                    sendMailVo.setItemDetailInfo(item.getItemDetailInfo());
-                                    return sendMailVo;
+                                    SendMailVO sendMailVO = new SendMailVO();
+                                    sendMailVO.setItemName(item.getItemName());
+                                    sendMailVO.setCategory(item.getCategory());
+                                    sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
+                                    return sendMailVO;
                                 })).collect(Collectors.toList());
 
         log.info("mails={}", mails);

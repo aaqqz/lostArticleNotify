@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class LostItemVo {
+public class LostItemVO {
 
     private String list_total_count;
 

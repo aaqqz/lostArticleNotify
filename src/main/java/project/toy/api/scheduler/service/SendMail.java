@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import project.toy.api.scheduler.vo.SendMailVo;
+import project.toy.api.scheduler.vo.SendMailVO;
 
 @Slf4j
 @Service
@@ -14,7 +14,7 @@ public class SendMail {
 
     private final JavaMailSender mailSender;
 
-    public void send(SendMailVo mail) {
+    public void send(SendMailVO mail) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
         // 1. 메일 수신자 설정
