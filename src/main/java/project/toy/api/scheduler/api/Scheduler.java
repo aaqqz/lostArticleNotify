@@ -4,16 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import project.toy.api.domain.LostItem;
 import project.toy.api.domain.LostStatus;
 import project.toy.api.domain.MemberLostItem;
-import project.toy.api.domain.SendMail;
 import project.toy.api.repository.LostItemRepository;
 import project.toy.api.repository.MemberLostItemRepository;
 import project.toy.api.repository.MemberLostItemRepositoryCustom;
 import project.toy.api.scheduler.service.SchedulerService;
+import project.toy.api.scheduler.service.SendMail;
 import project.toy.api.scheduler.vo.LostItemVo;
-import project.toy.api.scheduler.vo.SendMailVO;
+import project.toy.api.scheduler.vo.SendMailVo;
 import project.toy.api.vo.MemberLostItemVO;
 
 import java.util.ArrayList;
@@ -50,24 +51,23 @@ public class Scheduler {
 
     @Scheduled(cron = "0 0 0/1 * * *")
     public void getLostItem(){
-        List<MemberLostItemVO> memberLostItems = memberLostItemRepository.findMemberLostItems();
-        List<SendMailVO> mails =  memberLostItems.stream().flatMap(memberItem ->
+        int sendCount = 0;
+        List<MemberLostItem> memberLostItems = memberLostItemRepository.findMemberLostItems();
+        List<SendMailVo> mails =  memberLostItems.stream().flatMap(memberItem ->
                 lostItemService.findLostItem(memberItem).stream().map(item -> {
-                    SendMailVO sendMailVO = new SendMailVO();
-                    sendMailVO.setEmail(memberItem.getEmail());
+                    SendMailVo sendMailVO = new SendMailVo();
+                    sendMailVO.setEmail(memberItem.getMember().getEmail());
                     sendMailVO.setItemName(item.getItemName());
                     sendMailVO.setCategory(item.getCategory());
                     sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
                     return sendMailVO;
                 })).collect(Collectors.toList());
 
-//        System.out.println(mails);
-//        for (SendMailVO mail : mails) {
-//            sendMail.send(mail);
-//            sendCount ++;
-//        }
-        System.out.println(mails);
-//        mails.forEach(sendMail::send);
-//        System.out.println("이메일이 총 " + sendCount + "건 발송 되었습니다.");
+        if(!ObjectUtils.isEmpty(mails)){
+            for (SendMailVo mail : mails) {
+                sendCount += sendMail.send(mail);
+            }
+        }
+        System.out.println("이메일이 총 " + sendCount + "건 발송 되었습니다.");
     }
 }

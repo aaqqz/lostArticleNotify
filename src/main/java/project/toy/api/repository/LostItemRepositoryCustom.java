@@ -7,5 +7,5 @@ import project.toy.api.vo.MemberLostItemVO;
 import java.util.List;
 
 public interface LostItemRepositoryCustom {
-    List<LostItem> findLostItem(MemberLostItemVO memberItem);
+    List<LostItem> findLostItem(MemberLostItem memberItem);
 }

@@ -18,10 +18,8 @@ public class LostItemService {
 
     private final LostItemRepository lostItemRepository;
 
-    private final LostItemRepositoryCustom lostItemRepositoryCustom;
+    public List<LostItem> findLostItem(MemberLostItem memberItem) {
 
-    public List<LostItem> findLostItem(MemberLostItemVO memberItem) {
-
-        return lostItemRepositoryCustom.findLostItem(memberItem);
+        return lostItemRepository.findLostItem(memberItem);
     }
 }

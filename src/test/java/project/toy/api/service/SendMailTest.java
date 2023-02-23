@@ -7,16 +7,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostStatus;
-import project.toy.api.domain.SendMail;
 import project.toy.api.scheduler.api.Scheduler;
-import project.toy.api.scheduler.vo.SendMailVO;
+import project.toy.api.scheduler.service.SendMail;
+import project.toy.api.scheduler.vo.SendMailVo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @SpringBootTest
 public class SendMailTest {
 
-    @Autowired SendMail sendMail;
+    @Autowired
+    SendMail sendMail;
 
     @Autowired
     Scheduler scheduler;
@@ -25,7 +26,7 @@ public class SendMailTest {
     @DisplayName("메일 보내기")
     public void sendMail(){
         //given
-        SendMailVO mailVO = new SendMailVO();
+        SendMailVo mailVO = new SendMailVo();
         mailVO.setEmail("hk.kim.dev01@gmail.com");
         mailVO.setStatus(LostStatus.KEEP);
         mailVO.setCategory(LostCategory.BACKPACK);

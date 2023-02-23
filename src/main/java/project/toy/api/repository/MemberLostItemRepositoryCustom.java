@@ -9,5 +9,5 @@ public interface MemberLostItemRepositoryCustom {
 
     String findByUserId(Long id);
 
-    List<MemberLostItemVO> findMemberLostItems();
+    List<MemberLostItem> findMemberLostItems();
 }

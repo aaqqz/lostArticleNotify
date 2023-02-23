@@ -31,9 +31,8 @@ public class MemberLostItemRepositoryImpl implements MemberLostItemRepositoryCus
     }
 
     @Override
-    public List<MemberLostItemVO> findMemberLostItems() {
-        return  query.select(Projections.fields(MemberLostItemVO.class,
-                                member.email, member.id)).from(memberLostItem).join(memberLostItem.member).fetchJoin()
+    public List<MemberLostItem> findMemberLostItems() {
+        return (List<MemberLostItem>) query.from(memberLostItem).join(memberLostItem.member, member).fetchJoin()
                         .fetch();
     }
 }

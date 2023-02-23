@@ -26,7 +26,7 @@ public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     @PostMapping("/auth/login")
-    public ResponseEntity<Token> login2(@RequestBody @Valid Login login) {
+    public ResponseEntity<Token> login(@RequestBody @Valid Login login) {
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getId(), login.getPassword());
 
@@ -41,11 +41,5 @@ public class AuthController {
         httpHeaders.add("Authorization", "Bearer " + jwt);
 
         return new ResponseEntity<>(new Token(jwt), httpHeaders, HttpStatus.OK);
-    }
-
-    @PostMapping("/authX")
-    public String authX() {
-        log.info("authX >>>>>>>>>>>>>>>>>");
-        return "authX";
     }
 }

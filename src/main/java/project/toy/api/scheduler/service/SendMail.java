@@ -1,19 +1,21 @@
-package project.toy.api.domain;
+package project.toy.api.scheduler.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.util.ToStringUtil;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import project.toy.api.scheduler.vo.SendMailVO;
+import project.toy.api.scheduler.vo.SendMailVo;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SendMail {
     private final JavaMailSender mailSender;
 
-    public int send(SendMailVO mail) {
+    public int send(SendMailVo mail) {
         int result = 0;
         try {
             System.out.println("mail = " + mail);

@@ -29,8 +29,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                         post.title,
                         post.content,
                         post.createdBy,
-                        post.createdAt
-                ))
+                        post.createdAt))
                 .from(post)
                 .where(
                         titleLike(postSearch.getTitle()),

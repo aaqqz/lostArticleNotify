@@ -2,10 +2,7 @@ package project.toy.api.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -14,6 +11,7 @@ import javax.persistence.Id;
 public class LostItem extends BaseTimeEntity{
 
     @Id
+    @Column(name = "LOST_ITEM_ID")
     private String id;                  // 분실물 SEQ
 
     @Enumerated(EnumType.STRING)
