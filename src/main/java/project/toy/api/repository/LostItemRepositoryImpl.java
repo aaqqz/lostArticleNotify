@@ -17,21 +17,15 @@ public class LostItemRepositoryImpl implements LostItemRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<LostItem> findLostItem(MemberLostItem memberItem) {
+    public List<LostItem> findLostItem(MemberLostItem memberLostItem) {
 
         List<LostItem> result = queryFactory
-                .select(Projections.fields(LostItem.class,
-                        lostItem.id,
-                        lostItem.status,
-                        lostItem.category,
-                        lostItem.itemName,
-                        lostItem.itemDetailInfo))
-                .from(lostItem)
+                .selectFrom(lostItem)
                 .where(
                         lostItem.status.ne(LostStatus.RECEIVE),
-                        lostItem.category.eq(memberItem.getCategory()),
-                        lostItem.itemName.contains(memberItem.getItemName()),
-                        lostItem.itemDetailInfo.contains(memberItem.getItemDetailInfo())
+                        lostItem.category.eq(memberLostItem.getCategory()),
+                        lostItem.itemName.contains(memberLostItem.getItemName()),
+                        lostItem.itemDetailInfo.contains(memberLostItem.getItemDetailInfo())
                 ).fetch();
 
         return result;

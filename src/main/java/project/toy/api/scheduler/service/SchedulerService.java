@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static project.toy.api.domain.QLostItem.lostItem;
+
 @Slf4j
 @Service
 @Transactional
@@ -101,9 +103,9 @@ public class SchedulerService {
             conn.disconnect();
 
             JsonObject jsonObject = new Gson().fromJson(sb.toString(), JsonObject.class);
-            if ( jsonObject.has("lostArticleInfo")) {
+            if (jsonObject.has("lostArticleInfo")) {
                 lostItemVO = new Gson().fromJson(jsonObject.get("lostArticleInfo"), LostItemVO.class);
-            } else{
+            } else {
                 lostItemVO = new Gson().fromJson(jsonObject, LostItemVO.class);
             }
 
@@ -117,23 +119,25 @@ public class SchedulerService {
 
     // ##### sendEmail #####
     public void matchingItemSendEmail() {
-        List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
+        List<MemberLostItem> memberLostItems = memberLostItemRepository.findMemberLostItemFetchJoin();
         log.info("memberLostItems={}", memberLostItems);
 
         List<SendMailVO> mails = memberLostItems.stream()
-                .flatMap(memberItem ->
-                        lostItemRepository.findLostItem(memberItem).stream()
-                                .map(item -> {
-                                    SendMailVO sendMailVO = new SendMailVO();
-                                    sendMailVO.setItemName(item.getItemName());
-                                    sendMailVO.setCategory(item.getCategory());
-                                    sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
-                                    return sendMailVO;
-                                })).collect(Collectors.toList());
+                .flatMap(memberLostItem -> lostItemRepository.findLostItem(memberLostItem).stream()
+                        .map(item -> {
+                            SendMailVO sendMailVO = new SendMailVO();
+                            sendMailVO.setEmail(memberLostItem.getMember().getEmail());
+                            sendMailVO.setStatus(item.getStatus());
+                            sendMailVO.setCategory(item.getCategory());
+                            sendMailVO.setItemName(item.getItemName());
+                            sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
+                            sendMailVO.setTakePosition(item.getTakePosition());
+                            return sendMailVO;
+                        })).collect(Collectors.toList());
 
         log.info("mails={}", mails);
-        Long sendCount = mails.stream().peek(sendMail::send).count();
-        log.info("이메일이 총 {}건 발송 되었습니다.", sendCount);
+        mails.forEach(mail -> sendMail.send(mail));
+        log.info("이메일이 총 {}건 발송 되었습니다.");
     }
     // ##### sendEmail #####
 }
