@@ -9,7 +9,7 @@ import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostStatus;
 import project.toy.api.scheduler.api.Scheduler;
 import project.toy.api.scheduler.service.SendMail;
-import project.toy.api.scheduler.vo.SendMailVo;
+import project.toy.api.scheduler.vo.SendMailVO;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -26,7 +26,7 @@ public class SendMailTest {
     @DisplayName("메일 보내기")
     public void sendMail(){
         //given
-        SendMailVo mailVO = new SendMailVo();
+        SendMailVO mailVO = new SendMailVO();
         mailVO.setEmail("hk.kim.dev01@gmail.com");
         mailVO.setStatus(LostStatus.KEEP);
         mailVO.setCategory(LostCategory.BACKPACK);

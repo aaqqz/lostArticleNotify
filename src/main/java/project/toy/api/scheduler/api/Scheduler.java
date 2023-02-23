@@ -13,8 +13,7 @@ import project.toy.api.repository.MemberLostItemRepository;
 import project.toy.api.repository.MemberLostItemRepositoryCustom;
 import project.toy.api.scheduler.service.SchedulerService;
 import project.toy.api.scheduler.service.SendMail;
-import project.toy.api.scheduler.vo.LostItemVo;
-import project.toy.api.scheduler.vo.SendMailVo;
+import project.toy.api.scheduler.vo.SendMailVO;
 import project.toy.api.vo.MemberLostItemVO;
 
 import java.util.ArrayList;
@@ -53,9 +52,9 @@ public class Scheduler {
     public void getLostItem(){
         int sendCount = 0;
         List<MemberLostItem> memberLostItems = memberLostItemRepository.findMemberLostItems();
-        List<SendMailVo> mails =  memberLostItems.stream().flatMap(memberItem ->
+        List<SendMailVO> mails =  memberLostItems.stream().flatMap(memberItem ->
                 lostItemService.findLostItem(memberItem).stream().map(item -> {
-                    SendMailVo sendMailVO = new SendMailVo();
+                    SendMailVO sendMailVO = new SendMailVO();
                     sendMailVO.setEmail(memberItem.getMember().getEmail());
                     sendMailVO.setItemName(item.getItemName());
                     sendMailVO.setCategory(item.getCategory());
@@ -64,7 +63,7 @@ public class Scheduler {
                 })).collect(Collectors.toList());
 
         if(!ObjectUtils.isEmpty(mails)){
-            for (SendMailVo mail : mails) {
+            for (SendMailVO mail : mails) {
                 sendCount += sendMail.send(mail);
             }
         }

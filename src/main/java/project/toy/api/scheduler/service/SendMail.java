@@ -7,7 +7,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import project.toy.api.scheduler.vo.SendMailVo;
+import project.toy.api.scheduler.vo.SendMailVO;
 
 @Slf4j
 @Service
@@ -15,7 +15,7 @@ import project.toy.api.scheduler.vo.SendMailVo;
 public class SendMail {
     private final JavaMailSender mailSender;
 
-    public int send(SendMailVo mail) {
+    public int send(SendMailVO mail) {
         int result = 0;
         try {
             System.out.println("mail = " + mail);

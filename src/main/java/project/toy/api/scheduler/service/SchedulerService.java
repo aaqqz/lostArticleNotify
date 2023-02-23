@@ -6,22 +6,30 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.toy.api.common.Common;
 import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostItem;
 import project.toy.api.domain.LostStatus;
+import project.toy.api.domain.MemberLostItem;
 import project.toy.api.repository.LostItemRepository;
-import project.toy.api.scheduler.vo.LostItemVo;
+import project.toy.api.repository.MemberLostItemRepository;
+import project.toy.api.scheduler.vo.LostItemVO;
+import project.toy.api.scheduler.vo.SendMailVO;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SchedulerService {
 
@@ -29,21 +37,26 @@ public class SchedulerService {
 
     @Value("${publicData.lostItem.baseUrl}")
     private String baseUrl;
-    
+
+    private final MemberLostItemRepository memberLostItemRepository;
+    private final SendMail sendMail;
+
+    // ##### setLostItem #####
     public void setLostItem() {
         try {
             int listTotalCount = Integer.parseInt(lostItemApiCall(1, 1).getList_total_count());
 
-            LostItemVo lostItemVo = lostItemApiCall(listTotalCount - 100, listTotalCount);
+            LostItemVO lostItemVo = lostItemApiCall(listTotalCount - 100, listTotalCount);
 
             lostItemSave(lostItemVo.getRow());
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("errorMessage", e);
         }
     }
 
-    private void lostItemSave(List<LostItemVo.row> row) {
-        for (LostItemVo.row apiData : row) {
+    private void lostItemSave(List<LostItemVO.row> row) {
+        List<LostItem> lostItems = new ArrayList<>();
+        for (LostItemVO.row apiData : row) {
             LostStatus lostStatus = Common.getLostStatus(apiData.getSTATUS());
             LostCategory lostCategory = Common.getLostCategory(apiData.getCATE());
 
@@ -62,14 +75,13 @@ public class SchedulerService {
             findLostItem.setRegDate(apiData.getREG_DATE());
             findLostItem.setGetDate(apiData.getGET_DATE());
 
-            lostItemRepository.save(findLostItem);
+            lostItems.add(findLostItem);
         }
+        lostItemRepository.saveAll(lostItems);
     }
 
-
-
-    private LostItemVo lostItemApiCall(int startIndex, int endIndex) {
-        LostItemVo lostItemVo;
+    private LostItemVO lostItemApiCall(int startIndex, int endIndex) {
+        LostItemVO lostItemVO;
         String apiCallUrl = baseUrl + startIndex + "/" + endIndex;
 
         try {
@@ -90,15 +102,38 @@ public class SchedulerService {
 
             JsonObject jsonObject = new Gson().fromJson(sb.toString(), JsonObject.class);
             if ( jsonObject.has("lostArticleInfo")) {
-                lostItemVo = new Gson().fromJson(jsonObject.get("lostArticleInfo"), LostItemVo.class);
+                lostItemVO = new Gson().fromJson(jsonObject.get("lostArticleInfo"), LostItemVO.class);
             } else{
-                lostItemVo = new Gson().fromJson(jsonObject, LostItemVo.class);
+                lostItemVO = new Gson().fromJson(jsonObject, LostItemVO.class);
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return lostItemVo;
+        return lostItemVO;
     }
+    // ##### setLostItem #####
+
+    // ##### sendEmail #####
+    public void matchingItemSendEmail() {
+        List<MemberLostItem> memberLostItems = memberLostItemRepository.findAll();
+        log.info("memberLostItems={}", memberLostItems);
+
+        List<SendMailVO> mails = memberLostItems.stream()
+                .flatMap(memberItem ->
+                        lostItemRepository.findLostItem(memberItem).stream()
+                                .map(item -> {
+                                    SendMailVO sendMailVO = new SendMailVO();
+                                    sendMailVO.setItemName(item.getItemName());
+                                    sendMailVO.setCategory(item.getCategory());
+                                    sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
+                                    return sendMailVO;
+                                })).collect(Collectors.toList());
+
+        log.info("mails={}", mails);
+        Long sendCount = mails.stream().peek(sendMail::send).count();
+        log.info("이메일이 총 {}건 발송 되었습니다.", sendCount);
+    }
+    // ##### sendEmail #####
 }
