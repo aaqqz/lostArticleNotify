@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import project.toy.api.common.Common;
 import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostStatus;
-import project.toy.api.scheduler.api.Scheduler;
+import project.toy.api.scheduler.service.SchedulerService;
 import project.toy.api.scheduler.service.SendMail;
 import project.toy.api.scheduler.vo.SendMailVO;
 
@@ -20,7 +20,7 @@ public class SendMailTest {
     SendMail sendMail;
 
     @Autowired
-    Scheduler scheduler;
+    SchedulerService schedulerService;
 
     @Autowired
     CommentService commentService;
@@ -45,7 +45,7 @@ public class SendMailTest {
         //given
 
         //when
-        scheduler.getLostItem();
+        schedulerService.matchingItemSendEmail();
 
         //then
     }

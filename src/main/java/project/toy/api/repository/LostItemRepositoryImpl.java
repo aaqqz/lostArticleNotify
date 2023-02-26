@@ -15,20 +15,17 @@ import static project.toy.api.domain.QLostItem.lostItem;
 public class LostItemRepositoryImpl implements LostItemRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
+
     @Override
-    public List<LostItem> findLostItem(MemberLostItem memberItem) {
-        List<LostItem> result = queryFactory.select(Projections.fields(LostItem.class,
-                        lostItem.id,
-                        lostItem.itemName,
-                        lostItem.category,
-                        lostItem.status,
-                        lostItem.itemDetailInfo))
-                .from(lostItem)
+    public List<LostItem> findLostItem(MemberLostItem memberLostItem) {
+
+        List<LostItem> result = queryFactory
+                .selectFrom(lostItem)
                 .where(
                         lostItem.status.ne(LostStatus.RECEIVE),
-                        lostItem.category.eq(memberItem.getCategory()),
-                        lostItem.itemName.contains(memberItem.getItemName()),
-                        lostItem.itemDetailInfo.contains(memberItem.getItemDetailInfo())
+                        lostItem.category.eq(memberLostItem.getCategory()),
+                        lostItem.itemName.contains(memberLostItem.getItemName()),
+                        lostItem.itemDetailInfo.contains(memberLostItem.getItemDetailInfo())
                 ).fetch();
 
         return result;

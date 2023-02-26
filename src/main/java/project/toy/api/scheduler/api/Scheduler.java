@@ -4,21 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
-import project.toy.api.domain.LostItem;
-import project.toy.api.domain.LostStatus;
-import project.toy.api.domain.MemberLostItem;
-import project.toy.api.repository.LostItemRepository;
-import project.toy.api.repository.MemberLostItemRepository;
-import project.toy.api.repository.MemberLostItemRepositoryCustom;
 import project.toy.api.scheduler.service.SchedulerService;
-import project.toy.api.scheduler.service.SendMail;
-import project.toy.api.scheduler.vo.SendMailVO;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -34,38 +20,18 @@ public class Scheduler {
      ***********************************************************************************************/
 
     private final SchedulerService schedulerService;
-    private final LostItemService lostItemService;
-    private final MemberLostItemRepository memberLostItemRepository;
-
-    private final SendMail sendMail;
-
-
-//    @Scheduled(cron = "0 0 0/1 * * *")
-//    public void setLostItem() {
-//        log.info("##### setLostItem Start #####");
-//        schedulerService.setLostItem();
-//        log.info("##### setLostItem End #####");
-//    }
 
     @Scheduled(cron = "0 0 0/1 * * *")
-    public void getLostItem(){
-        int sendCount = 0;
-        List<MemberLostItem> memberLostItems = memberLostItemRepository.findMemberLostItems();
-        List<SendMailVO> mails =  memberLostItems.stream().flatMap(memberItem ->
-                lostItemService.findLostItem(memberItem).stream().map(item -> {
-                    SendMailVO sendMailVO = new SendMailVO();
-                    sendMailVO.setEmail(memberItem.getMember().getEmail());
-                    sendMailVO.setItemName(item.getItemName());
-                    sendMailVO.setCategory(item.getCategory());
-                    sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
-                    return sendMailVO;
-                })).collect(Collectors.toList());
+    public void setLostItem() {
+        log.info("##### setLostItem Start #####");
+        schedulerService.setLostItem();
+        log.info("##### setLostItem End #####");
+    }
 
-        if(!ObjectUtils.isEmpty(mails)){
-            for (SendMailVO mail : mails) {
-                sendCount += sendMail.send(mail);
-            }
-        }
-        System.out.println("이메일이 총 " + sendCount + "건 발송 되었습니다.");
+    @Scheduled(cron = "0 0 0/1 * * *")
+    public void sendEmail(){
+        log.info("##### sendEmail Start #####");
+        schedulerService.matchingItemSendEmail();
+        log.info("##### sendEmail End #####");
     }
 }

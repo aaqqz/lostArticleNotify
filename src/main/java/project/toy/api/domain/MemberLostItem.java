@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @ToString
 @NoArgsConstructor
-public class MemberLostItem extends BaseEntity{
+public class MemberLostItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +31,9 @@ public class MemberLostItem extends BaseEntity{
     private String itemDetailInfo;      // 분실물 상세내용
 
     @Builder
-    public MemberLostItem(Member member, LostCategory category, String itemName, String itemDetailInfo){
+    public MemberLostItem(Member member, LostCategory category, String itemName, String itemDetailInfo) {
         this.member = member;
-        if(!member.getMemberLostItems().contains(this)){
+        if (!member.getMemberLostItems().contains(this)) {
             member.getMemberLostItems().add(this);
         }
         this.category = category;

@@ -1,5 +1,6 @@
 package project.toy.api.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +13,13 @@ import project.toy.api.service.MemberLostItemService;
 import javax.validation.Valid;
 
 @RestController
+@RequiredArgsConstructor
 public class MemberLostItemController {
 
-    private MemberLostItemService memberLostItemService;
+    private final MemberLostItemService memberLostItemService;
 
-    @PostMapping("/lostItem/{lostItemId}")
-    public ResponseEntity<CommonResponse> write(@PathVariable int lostItemId, @RequestBody @Valid MemberLostItemCreate memberLostItemCreate){
+    @PostMapping("/memberLostItem")
+    public ResponseEntity<CommonResponse> write(@RequestBody @Valid MemberLostItemCreate memberLostItemCreate){
         memberLostItemService.save(memberLostItemCreate);
 
         return ResponseEntity.ok().body(CommonResponse.defaultCommonResponse());

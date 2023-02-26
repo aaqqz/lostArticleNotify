@@ -15,29 +15,29 @@ import java.util.List;
 @SpringBootTest
 class SchedulerTest {
 
-//    @Autowired
-//    Scheduler scheduler;
-//
-//    @Autowired
-//    LostItemRepository lostItemRepository;
-//
-//    @Test
-//    @DisplayName("분실물 api call")
-//    void apiCall() {
-//        // given
-//        scheduler.setLostItem();
-//
-//        // when
-//        List<LostItem> result = lostItemRepository.findAll();
-//
-//        // then
-//        Assertions.assertThat(result.size()).isGreaterThan(0);
-//    }
-//
-//    @Test
-//    @DisplayName("매칭된 분실물 emailSend")
-//    void sendEmail() {
-//        // given
-//        scheduler.sendEmail();
-//    }
+    @Autowired
+    Scheduler scheduler;
+
+    @Autowired
+    LostItemRepository lostItemRepository;
+
+    @Test
+    @DisplayName("분실물 api call")
+    void apiCall() {
+        // given
+        scheduler.setLostItem();
+
+        // when
+        List<LostItem> result = lostItemRepository.findAll();
+
+        // then
+        Assertions.assertThat(result.size()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("매칭된 분실물 emailSend")
+    void sendEmail() {
+        // given
+        scheduler.sendEmail();
+    }
 }

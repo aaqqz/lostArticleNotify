@@ -6,5 +6,5 @@ import project.toy.api.domain.MemberLostItem;
 import java.util.List;
 
 public interface LostItemRepositoryCustom {
-    List<LostItem> findLostItem(MemberLostItem memberItem);
+    List<LostItem> findLostItem(MemberLostItem memberLostItem);
 }
