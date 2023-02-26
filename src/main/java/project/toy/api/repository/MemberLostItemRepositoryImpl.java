@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import project.toy.api.domain.Member;
 import project.toy.api.domain.MemberLostItem;
-import project.toy.api.vo.MemberLostItemVO;
 
 import javax.persistence.EntityManager;
 

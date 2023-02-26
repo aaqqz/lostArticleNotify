@@ -7,7 +7,6 @@ import project.toy.api.domain.LostItem;
 import project.toy.api.domain.MemberLostItem;
 import project.toy.api.repository.LostItemRepository;
 import project.toy.api.repository.LostItemRepositoryCustom;
-import project.toy.api.vo.MemberLostItemVO;
 
 import java.util.List;
 

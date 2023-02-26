@@ -3,12 +3,15 @@ package project.toy.api.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@ToString
 public class Comment extends BaseEntity{
 
     @Id
@@ -25,6 +28,9 @@ public class Comment extends BaseEntity{
     @ManyToOne
     @JoinColumn(name="POST_ID")
     private Post post;
+
+    @OneToMany(mappedBy = "id")
+    private List<Comment> childComment;
 
     @Builder
     public Comment(String comment, Member member, Post post){

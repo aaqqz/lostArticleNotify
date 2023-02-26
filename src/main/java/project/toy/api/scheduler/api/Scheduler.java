@@ -14,7 +14,6 @@ import project.toy.api.repository.MemberLostItemRepositoryCustom;
 import project.toy.api.scheduler.service.SchedulerService;
 import project.toy.api.scheduler.service.SendMail;
 import project.toy.api.scheduler.vo.SendMailVO;
-import project.toy.api.vo.MemberLostItemVO;
 
 import java.util.ArrayList;
 import java.util.List;

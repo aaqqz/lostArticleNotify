@@ -4,14 +4,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mail.javamail.JavaMailSender;
+import project.toy.api.common.Common;
 import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostStatus;
 import project.toy.api.scheduler.api.Scheduler;
 import project.toy.api.scheduler.service.SendMail;
 import project.toy.api.scheduler.vo.SendMailVO;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class SendMailTest {
@@ -21,6 +21,9 @@ public class SendMailTest {
 
     @Autowired
     Scheduler scheduler;
+
+    @Autowired
+    CommentService commentService;
 
     @Test
     @DisplayName("메일 보내기")
@@ -45,6 +48,29 @@ public class SendMailTest {
         scheduler.getLostItem();
 
         //then
+    }
+
+
+    @Test
+    public void getCategory() {
+        //when
+        LostCategory category = Common.getLostCategory(null);
+
+        //then
+//        assertThat(category).isEqualTo(LostCategory.BAG);
+        assertThat(category).isEqualTo(LostCategory.ETC);
+
+
+    }
+
+    @Test
+    public void getLostStatus() {
+
+        //when
+        LostStatus status = Common.getLostStatus("보관");
+
+        //then
+        assertThat(status).isEqualTo(LostStatus.KEEP);
     }
 }
 

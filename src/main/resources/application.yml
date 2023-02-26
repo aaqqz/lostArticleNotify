@@ -15,12 +15,12 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-#    defer-datasource-initialization: true
+    defer-datasource-initialization: true
 
   sql:
     init:

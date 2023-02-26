@@ -3,47 +3,33 @@ package project.toy.api.common;
 import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostStatus;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class Common {
     public static LostStatus getLostStatus(String status) {
-        switch (status) {
-            case "경찰서이관":
-                return LostStatus.POLICE;
-            case "우체국이관":
-                return LostStatus.POST;
-            case "보관":
-                return LostStatus.KEEP;
-            case "수령":
-                return LostStatus.RECEIVE;
-            default:
-                return LostStatus.ETC;
-        }
+        Map<String, LostStatus> getStatus = Map.of("경찰서이관", LostStatus.POLICE,
+                "우체국이관", LostStatus.POST,
+                "보관", LostStatus.KEEP,
+                "수령", LostStatus.RECEIVE);
+
+        status = Optional.ofNullable(status).orElse("");
+        return Optional.of(getStatus.get(status)).orElse(LostStatus.ETC);
     }
 
     public static LostCategory getLostCategory(String category) {
-        LostCategory.valueOf("BAG");
-        switch (category) {
-            case "가방":
-                return LostCategory.BAG;
-            case "배낭":
-                return LostCategory.BACKPACK;
-            case "서류봉투":
-                return LostCategory.ENVELOPE;
-            case "쇼핑백":
-                return LostCategory.SHOPBAG;
-            case "옷":
-                return LostCategory.CLOTHES;
-            case "장난감":
-                return LostCategory.TOY;
-            case "지갑":
-                return LostCategory.WALLET;
-            case "책":
-                return LostCategory.BOOK;
-            case "파일":
-                return LostCategory.FILE;
-            case "핸드폰":
-                return LostCategory.MOBILE;
-            default:
-                return LostCategory.ETC;
-        }
+        Map<String, LostCategory> getCategory = Map.of("가방", LostCategory.BAG,
+                "배낭", LostCategory.BACKPACK,
+                "서류봉투", LostCategory.ENVELOPE,
+                "쇼핑백", LostCategory.SHOPBAG,
+                "옷", LostCategory.CLOTHES,
+                "장난감", LostCategory.TOY,
+                "지갑", LostCategory.WALLET,
+                "책", LostCategory.BOOK,
+                "파일", LostCategory.FILE,
+                "핸드폰", LostCategory.MOBILE);
+
+        category = Optional.ofNullable(category).orElse("");
+        return Optional.ofNullable(getCategory.get(category)).orElse(LostCategory.ETC);
     }
 }

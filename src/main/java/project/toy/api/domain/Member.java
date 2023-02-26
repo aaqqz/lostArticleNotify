@@ -3,6 +3,7 @@ package project.toy.api.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,7 +12,8 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Member {
+@ToString
+public class Member extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
