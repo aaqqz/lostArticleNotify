@@ -1,5 +1,6 @@
 package project.toy.api.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import project.toy.api.domain.Member;
 import project.toy.api.exception.MemberExist;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberCreate;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,10 +28,14 @@ class MemberServiceTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-//    @BeforeEach
-//    void clean() {
-//        memberRepository.deleteAll();
-//    }
+    @BeforeEach
+    void clean() {
+        Optional<Member> testMember = memberRepository.findByEmail("join@join.com");
+
+        if (testMember.isPresent()){
+            memberRepository.delete(testMember.get());
+        }
+    }
 
     @Test
     @DisplayName("회원가입")

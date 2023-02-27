@@ -2,16 +2,17 @@ package project.toy.api.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 @Getter
+@NoArgsConstructor
 public class MemberCreate {
 
     @NotBlank(message = "이름을 입력해주세요.")
-    @DecimalMax(value = "20", message = "20글자를 넘을 수 없습니다.")
-    @DecimalMin(value = "5", message = "5글자보다 커야 합니다.")
+    @Size(min = 5, max = 20, message = "5~20 글자 사이여야 합니다.")
     private String name;
 
     @NotBlank(message = "이메일을 입력해주세요.")
@@ -31,7 +32,7 @@ public class MemberCreate {
     }
 
     public void validate() {
-        if (!name.contains("관리자")){
+        if (name.contains("관리자")){
             throw new RuntimeException("다른 이름을 입력해주세요.");
         }
     }

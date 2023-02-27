@@ -11,15 +11,15 @@ import project.toy.api.exception.MemberExist;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberCreate;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Member join(MemberCreate memberCreate) {
 
         boolean memberExist = memberRepository.memberExist(memberCreate.getEmail());
