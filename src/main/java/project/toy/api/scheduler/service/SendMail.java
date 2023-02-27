@@ -27,7 +27,6 @@ public class SendMail {
         simpleMailMessage.setText(mail.getStatus() + mail.getTakePosition() + mail.getItemDetailInfo());
 
         // 4. 메일 전송
-
         mailSender.send(simpleMailMessage);
     }
 }

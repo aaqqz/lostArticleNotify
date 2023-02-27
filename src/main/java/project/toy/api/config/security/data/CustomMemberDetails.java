@@ -1,4 +1,4 @@
-package project.toy.api.config.data;
+package project.toy.api.config.security.data;
 
 import lombok.Builder;
 import lombok.Data;

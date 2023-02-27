@@ -12,6 +12,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
+    // todo 회원가입 process
 
     private final MemberService memberService;
 

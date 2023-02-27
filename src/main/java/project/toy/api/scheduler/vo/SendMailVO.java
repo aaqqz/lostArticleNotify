@@ -5,6 +5,8 @@ import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostStatus;
 
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class SendMailVO {
 

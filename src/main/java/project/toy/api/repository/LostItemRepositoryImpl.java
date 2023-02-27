@@ -1,6 +1,5 @@
 package project.toy.api.repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import project.toy.api.domain.LostItem;
@@ -17,7 +16,7 @@ public class LostItemRepositoryImpl implements LostItemRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<LostItem> findLostItem(MemberLostItem memberLostItem) {
+    public List<LostItem> findMatchingLostItem(MemberLostItem memberLostItem) {
 
         List<LostItem> result = queryFactory
                 .selectFrom(lostItem)

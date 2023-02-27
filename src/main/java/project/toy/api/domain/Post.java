@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class Post extends BaseEntity {
 

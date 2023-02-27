@@ -2,7 +2,7 @@ package project.toy.api.config.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import project.toy.api.config.data.CustomMemberDetails;
+import project.toy.api.config.security.data.CustomMemberDetails;
 
 public class SecurityUtils {
 

@@ -1,9 +1,8 @@
 package project.toy.api.service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import project.toy.api.common.Common;
+import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.Member;
 import project.toy.api.domain.MemberLostItem;
 import project.toy.api.exception.MemberNotFound;
@@ -24,7 +23,7 @@ public class MemberLostItemService {
 
         MemberLostItem memberLostItem = MemberLostItem.builder()
                 .member(findMember)
-                .category(Common.getLostCategory(memberLostItemCreate.getCategory()))
+                .category(LostCategory.getKey(memberLostItemCreate.getCategory()))
                 .itemName(memberLostItemCreate.getItemName())
                 .itemDetailInfo(memberLostItemCreate.getItemDetailInfo())
                 .build();

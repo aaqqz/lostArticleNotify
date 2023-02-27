@@ -4,9 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import project.toy.api.domain.MemberLostItem;
 
-import javax.persistence.EntityManager;
-import project.toy.api.domain.QMember;
-
 import java.util.List;
 
 import static project.toy.api.domain.QMember.member;

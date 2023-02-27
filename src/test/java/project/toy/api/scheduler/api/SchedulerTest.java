@@ -37,7 +37,6 @@ class SchedulerTest {
     @Test
     @DisplayName("매칭된 분실물 emailSend")
     void sendEmail() {
-        // given
         scheduler.sendEmail();
     }
 }

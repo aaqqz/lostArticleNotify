@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
+    // todo 계층형 댓글 작업 service
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;

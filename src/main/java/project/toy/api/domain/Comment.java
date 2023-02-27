@@ -3,7 +3,6 @@ package project.toy.api.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@ToString
 public class Comment extends BaseEntity{
 
     @Id

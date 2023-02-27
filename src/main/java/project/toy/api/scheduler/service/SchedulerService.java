@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.toy.api.common.Common;
 import project.toy.api.domain.LostCategory;
 import project.toy.api.domain.LostItem;
 import project.toy.api.domain.LostStatus;
@@ -17,7 +16,6 @@ import project.toy.api.repository.MemberLostItemRepository;
 import project.toy.api.scheduler.vo.LostItemVO;
 import project.toy.api.scheduler.vo.SendMailVO;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,8 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static project.toy.api.domain.QLostItem.lostItem;
 
 @Slf4j
 @Service
@@ -59,8 +55,8 @@ public class SchedulerService {
     private void lostItemSave(List<LostItemVO.row> row) {
         List<LostItem> lostItems = new ArrayList<>();
         for (LostItemVO.row apiData : row) {
-            LostStatus lostStatus = Common.getLostStatus(apiData.getSTATUS());
-            LostCategory lostCategory = Common.getLostCategory(apiData.getCATE());
+            LostStatus lostStatus = LostStatus.getKey(apiData.getSTATUS());
+            LostCategory lostCategory = LostCategory.getKey(apiData.getCATE());
 
             LostItem findLostItem = lostItemRepository.findById(apiData.getID())
                     .orElseGet(LostItem::new);
@@ -123,17 +119,17 @@ public class SchedulerService {
         log.info("memberLostItems={}", memberLostItems);
 
         List<SendMailVO> mails = memberLostItems.stream()
-                .flatMap(memberLostItem -> lostItemRepository.findLostItem(memberLostItem).stream()
-                        .map(item -> {
-                            SendMailVO sendMailVO = new SendMailVO();
-                            sendMailVO.setEmail(memberLostItem.getMember().getEmail());
-                            sendMailVO.setStatus(item.getStatus());
-                            sendMailVO.setCategory(item.getCategory());
-                            sendMailVO.setItemName(item.getItemName());
-                            sendMailVO.setItemDetailInfo(item.getItemDetailInfo());
-                            sendMailVO.setTakePosition(item.getTakePosition());
-                            return sendMailVO;
-                        })).collect(Collectors.toList());
+                .flatMap(memberLostItem -> lostItemRepository.findMatchingLostItem(memberLostItem).stream()
+                        .map(item ->
+                                SendMailVO.builder()
+                                        .email(memberLostItem.getMember().getEmail())
+                                        .status(item.getStatus())
+                                        .category(item.getCategory())
+                                        .itemName(item.getItemName())
+                                        .itemDetailInfo(item.getItemDetailInfo())
+                                        .takePosition(item.getTakePosition())
+                                        .build()
+                        )).collect(Collectors.toList());
 
         log.info("mails={}", mails);
         mails.forEach(mail -> sendMail.send(mail));
