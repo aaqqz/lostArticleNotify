@@ -1,15 +1,20 @@
 package project.toy.api.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import project.toy.api.domain.Member;
-import project.toy.api.scheduler.service.SendMail;
+import project.toy.api.exception.MemberExist;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberCreate;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class MemberServiceTest {
@@ -21,54 +26,49 @@ class MemberServiceTest {
     MemberRepository memberRepository;
 
     @Autowired
-    SendMail sendMail;
+    PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void clean() {
-        memberRepository.deleteAll();
+        Optional<Member> testMember = memberRepository.findByEmail("join@join.com");
+
+        if (testMember.isPresent()){
+            memberRepository.delete(testMember.get());
+        }
     }
 
     @Test
-    void 회원_등록 () {
+    @DisplayName("회원가입")
+    void join() {
         // given
-        MemberCreate memberCreate= MemberCreate.builder()
-                .name("member")
+        MemberCreate memberCreate = MemberCreate.builder()
+                .name("회원가입 이름")
+                .email("join@join.com")
+                .password("QWEqwe123!@#")
                 .build();
 
         // when
-        memberService.join(memberCreate);
+        Member savedMember = memberService.join(memberCreate);
 
         // then
-        assertThat(memberRepository.count()).isEqualTo(1L);
-        Member member = memberRepository.findAll().get(0);
-        assertThat(member.getName()).isEqualTo("member");
+        assertThat(savedMember.getName()).isEqualTo("회원가입 이름");
+        assertThat(savedMember.getEmail()).isEqualTo("join@join.com");
+        assertThat(passwordEncoder.matches("QWEqwe123!@#", savedMember.getPassword())).isTrue();
     }
 
     @Test
-    void 회원_단건_조회() {
-        //given
-        Member member = Member.builder()
-                .name("member")
+    @DisplayName("회원가입_이미 존재 하는 회원")
+    void joinExist() {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .name("이미 존재함")
+                .email("admin@naver.com")
+                .password("QWEqwe123!@#")
                 .build();
-        memberRepository.save(member);
 
-        //when
-        Member findMember = memberService.findOne(member.getId());
-
-        //then
-        assertThat(findMember).isNotNull();
-        assertThat(findMember.getName()).isEqualTo("member");
-    }
-
-    @Test
-    void 회원_단건_조회_에러() {
-        //given
-//        String email = memberLostItemRepositoryCustom.findByUserId(1L);
-        //when
-
-//        System.out.println(email);
-        //then
-
-       // sendMail.send();
+        // expected
+        assertThatThrownBy(() -> memberService.join(memberCreate))
+                .isInstanceOf(MemberExist.class)
+                .hasMessageContaining("동일한 email이 존재합니다.");
     }
 }

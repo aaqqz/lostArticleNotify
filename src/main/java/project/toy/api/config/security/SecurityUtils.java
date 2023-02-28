@@ -17,7 +17,7 @@ public class SecurityUtils {
 
     public static String currentMemberName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication == null || !authentication.isAuthenticated()){
+        if( (authentication == null || !authentication.isAuthenticated()) || authentication.getPrincipal().equals("anonymousUser") ){
             return null;
         }
         CustomMemberDetails principal = (CustomMemberDetails) authentication.getPrincipal();

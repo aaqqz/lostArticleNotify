@@ -2,35 +2,38 @@ package project.toy.api.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.toy.api.domain.Member;
-import project.toy.api.exception.MemberNotFound;
+import project.toy.api.exception.MemberExist;
 import project.toy.api.repository.MemberRepository;
 import project.toy.api.request.MemberCreate;
 
-import java.util.List;
-
-@Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public void join(MemberCreate memberCreate) {
-        Member member = Member.builder()
+    @Transactional
+    public Member join(MemberCreate memberCreate) {
+
+        boolean memberExist = memberRepository.memberExist(memberCreate.getEmail());
+        if (memberExist) {
+            throw new MemberExist();
+        }
+
+        Member joinMember = Member.builder()
                 .name(memberCreate.getName())
+                .email(memberCreate.getEmail())
+                .password(passwordEncoder.encode(memberCreate.getPassword()))
+                .roleType("user")
                 .build();
 
-        memberRepository.save(member);
-    }
-
-    public Member findOne(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(() -> new MemberNotFound());
-    }
-
-    public List<Member> findMembers() {
-        return memberRepository.findAll();
+        return memberRepository.save(joinMember);
     }
 }
