@@ -1,11 +1,14 @@
 package project.toy.api.domain;
 
+import project.toy.api.scheduler.service.SendMail;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum LostCategory {
+
     // 가방, 배낭, 서류봉투, 쇼핑백, 옷, 장난감, 지갑, 책, 파일, 핸드폰, 기타
     BAG("가방"),
     BACKPACK("배낭"),
