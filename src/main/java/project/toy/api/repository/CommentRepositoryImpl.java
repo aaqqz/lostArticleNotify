@@ -7,10 +7,5 @@ import project.toy.api.domain.Member;
 @Repository
 public class CommentRepositoryImpl {
 
-    public void save(){
-        Comment comment = Comment.builder()
-                .comment("testtest")
-                .depthNumber(0)
-                .build();
-    }
+
 }

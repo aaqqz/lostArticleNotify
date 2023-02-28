@@ -42,6 +42,7 @@ public class Comment extends BaseEntity{
         this.post = post;
         this.parentComment = parentComment;
         this.childComment = childComment;
+        this.depthNumber = depthNumber;
 
         if(member != null && member.getComments() != null && !member.getComments().contains(this)){
             member.getComments().add(this);

@@ -1,6 +1,8 @@
 package project.toy.api.request;
 
+import lombok.Builder;
 import lombok.Getter;
+import project.toy.api.domain.Comment;
 
 import javax.validation.constraints.NotBlank;
 
@@ -16,4 +18,17 @@ public class CommentCreate {
 
     @NotBlank(message = "댓글을 입력해주세요.")
     private String comment;
+
+    private int depthNumber;
+
+    private Long parentId;
+
+    @Builder
+    public CommentCreate(Long postId, Long memberId, String comment, int depthNumber, Long parentId){
+        this.postId = postId;
+        this.memberId = memberId;
+        this.comment = comment;
+        this.depthNumber = depthNumber;
+        this.parentId = parentId;
+    }
 }
