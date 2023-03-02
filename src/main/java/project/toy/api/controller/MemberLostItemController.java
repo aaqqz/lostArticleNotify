@@ -14,7 +14,6 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 public class MemberLostItemController {
-    // todo 회원 등록 분실물
 
     private final MemberLostItemService memberLostItemService;
 

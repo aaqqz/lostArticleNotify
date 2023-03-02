@@ -12,7 +12,6 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
-    // todo 계층형 댓글 작업 controller
 
     private final CommentService commentService;
 
