@@ -48,7 +48,7 @@ class CommentServiceTest {
         //given
         CommentCreate commentCreate = CommentCreate.builder()
                 .comment("대댓글 남기기")
-                .depthNum(1)
+                .depthNumber(1)
                 .postId(2L)
                 .memberId(1L)
                 .parentId(1L)
