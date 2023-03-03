@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 public class MemberLostItemCreate {
-    // todo 회원 등록 분실물
 
     // pk id
     @NotBlank(message = "멤버키가 없습니다.")

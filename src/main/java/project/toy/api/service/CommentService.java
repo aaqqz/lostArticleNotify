@@ -3,7 +3,9 @@ package project.toy.api.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.toy.api.domain.*;
+import project.toy.api.domain.Comment;
+import project.toy.api.domain.Member;
+import project.toy.api.domain.Post;
 import project.toy.api.exception.ParentCommentNotFound;
 import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.CommentRepository;
@@ -11,15 +13,9 @@ import project.toy.api.repository.MemberRepository;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.CommentCreate;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    // todo 계층형 댓글 작업 service
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;

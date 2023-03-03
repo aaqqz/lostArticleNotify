@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 public class CommentCreate {
-    // todo 계층형 댓글 작업
 
     @NotBlank(message = "게시글ID가 없습니다.")
     private Long postId;
