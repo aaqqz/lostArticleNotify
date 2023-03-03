@@ -10,6 +10,8 @@ import project.toy.api.domain.LostStatus;
 @NoArgsConstructor
 public class SendMailVO {
 
+    private String memberLostItemId;
+
     private String email;
 
     private LostStatus status;

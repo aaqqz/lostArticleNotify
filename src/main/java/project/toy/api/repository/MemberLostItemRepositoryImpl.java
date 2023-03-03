@@ -3,6 +3,7 @@ package project.toy.api.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import project.toy.api.domain.MemberLostItem;
+import project.toy.api.scheduler.vo.SendMailVO;
 
 import java.util.List;
 
@@ -23,5 +24,14 @@ public class MemberLostItemRepositoryImpl implements MemberLostItemRepositoryCus
                 .fetch();
 
         return result;
+    }
+
+    @Override
+    public void memberLostItemSendStatusY(SendMailVO mail) {
+        queryFactory
+                .update(memberLostItem)
+                .set(memberLostItem.sendStatus, "Y")
+                .where(memberLostItem.id.eq(Long.valueOf(mail.getMemberLostItemId())))
+                .execute();
     }
 }

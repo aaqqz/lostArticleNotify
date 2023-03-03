@@ -122,6 +122,7 @@ public class SchedulerService {
                 .flatMap(memberLostItem -> lostItemRepository.findMatchingLostItem(memberLostItem).stream()
                         .map(item ->
                                 SendMailVO.builder()
+                                        .memberLostItemId(item.getId())
                                         .email(memberLostItem.getMember().getEmail())
                                         .status(item.getStatus())
                                         .category(item.getCategory())
@@ -132,8 +133,10 @@ public class SchedulerService {
                         )).collect(Collectors.toList());
 
         log.info("mails={}", mails);
-        mails.forEach(mail -> sendMail.send(mail));
-        log.info("이메일이 총 {}건 발송 되었습니다.");
+        mails.forEach(mail -> {
+            sendMail.send(mail);
+            memberLostItemRepository.memberLostItemSendStatusY(mail);
+        });
     }
     // ##### sendEmail #####
 }

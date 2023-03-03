@@ -3,6 +3,7 @@ package project.toy.api.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -27,6 +28,9 @@ public class MemberLostItem extends BaseEntity {
 
     private String itemDetailInfo;      // 분실물 상세내용
 
+    @ColumnDefault("'N'")
+    private String sendStatus;
+
     @Builder
     public MemberLostItem(Member member, LostCategory category, String itemName, String itemDetailInfo) {
         this.member = member;
@@ -36,5 +40,16 @@ public class MemberLostItem extends BaseEntity {
         this.category = category;
         this.itemName = itemName;
         this.itemDetailInfo = itemDetailInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "MemberLostItem{" +
+                "id=" + id +
+                ", category=" + category +
+                ", itemName='" + itemName + '\'' +
+                ", itemDetailInfo='" + itemDetailInfo + '\'' +
+                ", sendStatus='" + sendStatus + '\'' +
+                '}';
     }
 }
