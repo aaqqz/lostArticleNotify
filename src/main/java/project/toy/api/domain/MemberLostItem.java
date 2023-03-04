@@ -17,7 +17,7 @@ public class MemberLostItem extends BaseEntity {
     @Column(name = "MEMBER_LOST_ITEM_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
