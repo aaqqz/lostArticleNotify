@@ -3,6 +3,7 @@ package project.toy.api.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -32,7 +33,7 @@ public class Comment extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parentComment;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "parentComment", fetch = FetchType.EAGER)
     private List<Comment> childComment;
 
     @Builder
@@ -52,4 +53,5 @@ public class Comment extends BaseEntity{
             post.getComments().add(this);
         }
     }
+
 }
