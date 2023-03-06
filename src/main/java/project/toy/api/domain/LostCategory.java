@@ -1,7 +1,5 @@
 package project.toy.api.domain;
 
-import project.toy.api.scheduler.service.SendMail;
-
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;

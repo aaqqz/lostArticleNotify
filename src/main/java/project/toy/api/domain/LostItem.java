@@ -1,6 +1,10 @@
 package project.toy.api.domain;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -8,6 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@DynamicUpdate // 변경 컬럼만 update
 public class LostItem extends BaseTimeEntity{
 
     @Id

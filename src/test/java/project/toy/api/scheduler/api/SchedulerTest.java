@@ -10,11 +10,8 @@ import project.toy.api.domain.LostItem;
 import project.toy.api.domain.MemberLostItem;
 import project.toy.api.repository.LostItemRepository;
 import project.toy.api.repository.MemberLostItemRepository;
-import project.toy.api.scheduler.vo.MatchingItemVO;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -47,7 +44,7 @@ class SchedulerTest {
     @DisplayName("매칭된 분실물 emailSend")
     void sendEmail() {
         // given
-        scheduler.setLostItem();
+//        scheduler.setLostItem();
 
         // when
         scheduler.sendEmail();
@@ -61,7 +58,5 @@ class SchedulerTest {
                 .collect(Collectors.toList());
 
         Assertions.assertThat(sendCheck.size()).isEqualTo(1);
-
-
     }
 }
