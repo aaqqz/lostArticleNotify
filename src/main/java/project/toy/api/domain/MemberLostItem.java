@@ -32,7 +32,7 @@ public class MemberLostItem extends BaseEntity {
     private String sendStatus;
 
     @Builder
-    public MemberLostItem(Member member, LostCategory category, String itemName, String itemDetailInfo) {
+    public MemberLostItem(Member member, LostCategory category, String itemName, String itemDetailInfo, String sendStatus) {
         this.member = member;
         if (!member.getMemberLostItems().contains(this)) {
             member.getMemberLostItems().add(this);
@@ -40,6 +40,13 @@ public class MemberLostItem extends BaseEntity {
         this.category = category;
         this.itemName = itemName;
         this.itemDetailInfo = itemDetailInfo;
+        this.sendStatus = sendStatus != this.sendStatus ? this.sendStatus : "N";
+    }
+
+    public void edit(LostCategory category, String itemName, String itemDetailInfo) {
+        this.category = category != null ? category : this.category;
+        this.itemName = itemName != null ? itemName : this.itemName;
+        this.itemDetailInfo = itemDetailInfo != null ? itemDetailInfo : this.itemDetailInfo;
     }
 
     @Override
