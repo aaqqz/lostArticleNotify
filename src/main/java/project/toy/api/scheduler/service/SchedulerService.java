@@ -118,22 +118,20 @@ public class SchedulerService {
         List<MemberLostItem> memberLostItems = memberLostItemRepository.findMemberLostItemFetchJoin();
         log.info("memberLostItems={}", memberLostItems);
 
-        List<SendMailVO> mails = memberLostItems.stream()
+        memberLostItems.stream()
                 .flatMap(memberLostItem -> lostItemRepository.findMatchingLostItem(memberLostItem).stream()
-                        .map(item ->
-                                SendMailVO.builder()
-                                        .email(memberLostItem.getMember().getEmail())
-                                        .status(item.getStatus())
-                                        .category(item.getCategory())
-                                        .itemName(item.getItemName())
-                                        .itemDetailInfo(item.getItemDetailInfo())
-                                        .takePosition(item.getTakePosition())
-                                        .build()
-                        )).collect(Collectors.toList());
-
-        log.info("mails={}", mails);
-        mails.forEach(mail -> sendMail.send(mail));
-        log.info("이메일이 총 {}건 발송 되었습니다.");
+                        .map(matchingItem -> {
+                            memberLostItemRepository.memberLostItemSendStatusY(matchingItem);
+                            return SendMailVO.builder()
+                                    .email(memberLostItem.getMember().getEmail())
+                                    .status(matchingItem.getStatus())
+                                    .category(matchingItem.getCategory())
+                                    .itemName(matchingItem.getItemName())
+                                    .itemDetailInfo(matchingItem.getItemDetailInfo())
+                                    .takePosition(matchingItem.getTakePosition())
+                                    .build();
+                        }))
+                .forEach(sendMail::send);
     }
     // ##### sendEmail #####
 }
