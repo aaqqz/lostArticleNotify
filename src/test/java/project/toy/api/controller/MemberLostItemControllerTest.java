@@ -17,6 +17,7 @@ import project.toy.api.request.MemberLostItemCreate;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -56,5 +57,48 @@ class MemberLostItemControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("회원분실물 등록_category null")
+    void MLISave_categoryNull() throws Exception {
+        // given
+        MemberLostItemCreate create = MemberLostItemCreate.builder()
+                .category(null)
+                .itemName("아이폰")
+                .itemDetailInfo("흰색")
+                .build();
+        String json = objectMapper.writeValueAsString(create);
+
+        // expected
+        mockMvc.perform(post("/memberLostItem")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.validation.category").value("카테고리를 선택해주세요."))
+                .andDo(print());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("회원분실물 등록_itemName empty")
+    void MLISave_itemNameEmpty() throws Exception {
+        // given
+        MemberLostItemCreate create = MemberLostItemCreate.builder()
+                .category("장난감")
+                .itemDetailInfo("흰색")
+                .build();
+        String json = objectMapper.writeValueAsString(create);
+
+        // expected
+        mockMvc.perform(post("/memberLostItem")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.validation.itemName").value("분실물 이름을 입력해주세요."))
+                .andDo(print());
     }
 }
