@@ -2,7 +2,6 @@ package project.toy.api.request;
 
 import lombok.Builder;
 import lombok.Getter;
-import project.toy.api.domain.Comment;
 
 import javax.validation.constraints.NotBlank;
 

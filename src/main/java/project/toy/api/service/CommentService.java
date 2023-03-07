@@ -3,10 +3,10 @@ package project.toy.api.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import project.toy.api.domain.Comment;
 import project.toy.api.domain.Member;
 import project.toy.api.domain.Post;
+import project.toy.api.exception.MemberNotFound;
 import project.toy.api.exception.ParentCommentNotFound;
 import project.toy.api.exception.PostNotFound;
 import project.toy.api.repository.CommentRepository;
@@ -14,9 +14,10 @@ import project.toy.api.repository.MemberRepository;
 import project.toy.api.repository.PostRepository;
 import project.toy.api.request.CommentCreate;
 import project.toy.api.response.CommentResponse;
-import project.toy.api.response.CommonResponse;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +35,7 @@ public class CommentService {
                 .orElseThrow(() -> new PostNotFound());
 
         Member findMember = memberRepository.findById(commentCreate.getMemberId())
-                .orElseThrow();
+                .orElseThrow(() -> new MemberNotFound());
 
         Comment parentComment = new Comment();
         if(commentCreate.getParentId() != null && commentCreate.getParentId() != 0){

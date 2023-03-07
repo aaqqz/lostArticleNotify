@@ -56,7 +56,6 @@ class MemberLostItemControllerTest {
                         .content(json))
                 .andExpect(status().isOk())
                 .andDo(print());
-
     }
 
     @Test
@@ -99,6 +98,27 @@ class MemberLostItemControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value("400"))
                 .andExpect(jsonPath("$.validation.itemName").value("분실물 이름을 입력해주세요."))
+                .andDo(print());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("회원분실물 등록_itemDetailInfo empty")
+    void MLISave_itemDetailInfoEmpty() throws Exception {
+        // given
+        MemberLostItemCreate create = MemberLostItemCreate.builder()
+                .category("장난감")
+                .itemName("토이스토리")
+                .build();
+        String json = objectMapper.writeValueAsString(create);
+
+        // expected
+        mockMvc.perform(post("/memberLostItem")
+                        .contentType(APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.validation.itemDetailInfo").value("분실물 상세내용을 입력해주세요."))
                 .andDo(print());
     }
 }
